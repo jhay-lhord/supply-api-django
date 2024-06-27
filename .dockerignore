@@ -1,0 +1,6 @@
+.git
+.editorconfig
+.env
+.flake8
+.gitignore
+.pre-commit-config.yaml
