@@ -1,5 +1,5 @@
 #Python base image
-FROM python:3.9-slim
+FROM python:3.11-alpine
 
 #set environments variable
 ENV PYTHONUNBUFFERED=1
@@ -13,10 +13,10 @@ COPY requirements.txt /django-app
 RUN pip install -r requirements.txt
 
 #copy all files
-COPY . /django-backend/
+COPY . /django-app/
 
 #Expose port 8000
 EXPOSE 8000
 
 #run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "SupplyAPI.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
