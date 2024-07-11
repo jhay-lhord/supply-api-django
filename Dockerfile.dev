@@ -1,5 +1,5 @@
-#Python base image
-FROM python:3.11-alpine
+#Python base
+FROM python:3.9-slim
 
 #set environments variable
 ENV PYTHONUNBUFFERED=1
@@ -12,10 +12,12 @@ WORKDIR /django-app
 COPY requirements.txt /django-app
 RUN pip install -r requirements.txt
 
-#copy all files
-COPY . /django-app/
+#copy all files into the working directory
+COPY . /django-app
 
-#Expose port 8000
+#expose the port 8000
 EXPOSE 8000
 
-ENTRYPOINT ["sh", "./run-django.sh"]
+#run the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
