@@ -11,6 +11,10 @@ db.sqlite3
 db.sqlite3-journal
 media
 
+### Notes and Cheatsheets ###
+conventional-commit-cheatsheet.md
+git-command-cheatsheet.md
+
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
  SupplyAPI/staticfiles/
@@ -176,3 +180,4 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+conventional-commit-cheatsheet.md
