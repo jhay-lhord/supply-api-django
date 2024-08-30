@@ -1,11 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
-
-
-class SupplyOfficer(models.Model):
-    supply_officer = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
+from django.db import models
 
 
 class Item(models.Model):
@@ -19,11 +13,11 @@ class Item(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.ItemDescription
+        return self.item_description
 
 
 class PurchaseRequest(models.Model):
-    pr_np = models.CharField(max_length=50, primary_key=True)
+    pr_no = models.CharField(max_length=50, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     item_no = models.ForeignKey(Item, on_delete=models.CASCADE)
     res_center_code = models.CharField(max_length=10)
@@ -33,7 +27,7 @@ class PurchaseRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.PRNo} {self.username}'
+        return f'{self.pr_no} {self.user.username}'
 
 
 class Supplier(models.Model):
@@ -43,7 +37,7 @@ class Supplier(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.SupplierName
+        return self.supplier_name
 
 
 class PurchaseOrder(models.Model):
@@ -62,7 +56,7 @@ class PurchaseOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.PONo}'
+        return f'{self.po_no}'
 
 
 class InspectionAcceptanceReport(models.Model):
@@ -82,7 +76,7 @@ class InspectionAcceptanceReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.IARNo} {self.ItemNo}'
+        return f'{self.iar_no} {self.item_no}'
 
 
 class RequisitionIssueSlip(models.Model):
@@ -102,4 +96,4 @@ class RequisitionIssueSlip(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.RISNo} {self.Office}'
+        return f'{self.ris_no} {self.office}'

@@ -26,4 +26,3 @@ poetry add <package name>
 ```
 
 ### Read More in `Makefile` File
-
