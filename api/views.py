@@ -24,7 +24,7 @@ class ItemList(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -34,7 +34,7 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseRequestList(generics.ListCreateAPIView):
@@ -44,7 +44,7 @@ class PurchaseRequestList(generics.ListCreateAPIView):
     queryset = PurchaseRequest.objects.select_related('user').all()
     serializer_class = PurchaseRequestSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -54,7 +54,7 @@ class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = PurchaseRequest.objects.select_related('user').all()
     serializer_class = PurchaseRequestSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class SupplierList(generics.ListCreateAPIView):
@@ -64,7 +64,7 @@ class SupplierList(generics.ListCreateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -74,7 +74,7 @@ class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseOrderList(generics.ListCreateAPIView):
@@ -84,7 +84,7 @@ class PurchaseOrderList(generics.ListCreateAPIView):
     queryset = PurchaseOrder.objects.select_related('item').all()
     serializer_class = PurchaseOrderSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -94,7 +94,7 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = PurchaseOrder.objects.select_related('item').all()
     serializer_class = PurchaseOrderSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class InspectionAcceptanceReportList(generics.ListCreateAPIView):
@@ -104,7 +104,7 @@ class InspectionAcceptanceReportList(generics.ListCreateAPIView):
     queryset = InspectionAcceptanceReport.objects.select_related('supplier', 'item', 'purchaseOrder').all()
     serializer_class = InspectionAcceptanceReportSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class InspectionAcceptanceReportDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -114,7 +114,7 @@ class InspectionAcceptanceReportDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = InspectionAcceptanceReport.objects.select_related('supplier', 'item', 'purchaseOrder').all()
     serializer_class = InspectionAcceptanceReportSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class RequisitionIssueSlipList(generics.ListCreateAPIView):
@@ -124,7 +124,7 @@ class RequisitionIssueSlipList(generics.ListCreateAPIView):
     queryset = RequisitionIssueSlip.objects.select_related('item').all()
     serializer_class = RequisitionIssueSlipSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class RequisitionIssueSlipDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -134,4 +134,4 @@ class RequisitionIssueSlipDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = RequisitionIssueSlip.objects.all()
     serializer_class = RequisitionIssueSlipSerializer
     authentication_classes = [JWTAuthentication]
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
