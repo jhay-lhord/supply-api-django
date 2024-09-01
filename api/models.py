@@ -1,102 +1,99 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
-class User(models.Model):
-    pass
-
-
 class Item(models.Model):
-    ItemNo = models.CharField(max_length=50, primary_key=True)
-    Property = models.CharField(max_length=10)
-    Unit = models.CharField(max_length=10)
-    ItemDescription = models.CharField(max_length=50)
-    Quantity = models.CharField(max_length=10)
-    UnitCost = models.CharField(max_length=10)
-    TotalCost = models.CharField(max_length=10)
+    item_no = models.CharField(max_length=50, primary_key=True)
+    item_property = models.CharField(max_length=10)
+    unit = models.CharField(max_length=10)
+    item_description = models.CharField(max_length=50)
+    quantity = models.CharField(max_length=10)
+    unit_cost = models.CharField(max_length=10)
+    total_cost = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.ItemDescription
+        return self.item_description
 
 
 class PurchaseRequest(models.Model):
-    PRNo = models.CharField(max_length=50, primary_key=True)
-    User = models.ForeignKey(User, on_delete=models.CASCADE)
-    ItemNo = models.ForeignKey(Item, on_delete=models.CASCADE)
-    ResCenterCode = models.CharField(max_length=10)
-    Purpose = models.CharField(max_length=50)
-    RequestedBy = models.CharField(max_length=50)
-    ApprovedBy = models.CharField(max_length=50)
+    pr_no = models.CharField(max_length=50, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item_no = models.ForeignKey(Item, on_delete=models.CASCADE)
+    res_center_code = models.CharField(max_length=10)
+    purpose = models.CharField(max_length=50)
+    requested_by = models.CharField(max_length=50)
+    approved_by = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.PRNo} {self.username}'
+        return f'{self.pr_no} {self.user.username}'
 
 
 class Supplier(models.Model):
-    SupplierNo = models.CharField(max_length=50, primary_key=True)
-    SupplierName = models.CharField(max_length=50)
-    Tin = models.CharField(max_length=30)
+    supplier_no = models.CharField(max_length=50, primary_key=True)
+    supplier_name = models.CharField(max_length=50)
+    tin = models.CharField(max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.SupplierName
+        return self.supplier_name
 
 
 class PurchaseOrder(models.Model):
-    PONo = models.CharField(max_length=50, primary_key=True)
-    Item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    SupplierNo = models.CharField(max_length=10)
-    Address = models.CharField(max_length=100)
-    PlaceOfDelivery = models.CharField(max_length=100)
-    DateOfDelivery = models.DateTimeField()
-    DeliveryTerm = models.CharField(max_length=100)
-    FundCluster = models.CharField(max_length=10)
-    FundsAvailable = models.CharField(max_length=10)
-    ORSBURSNo = models.CharField(max_length=10)
-    DateOfORSBURS = models.DateTimeField()
-    TotalAmount = models.CharField(max_length=10)
+    po_no = models.CharField(max_length=50, primary_key=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    supplier_no = models.CharField(max_length=10)
+    address = models.CharField(max_length=100)
+    place_of_delivery = models.CharField(max_length=100)
+    date_of_delivery = models.DateTimeField()
+    delivery_term = models.CharField(max_length=100)
+    fund_cluster = models.CharField(max_length=10)
+    funds_available = models.CharField(max_length=10)
+    orsburs_no = models.CharField(max_length=10)
+    date_of_orsburs = models.DateTimeField()
+    total_amount = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.PONo}'
+        return f'{self.po_no}'
 
 
 class InspectionAcceptanceReport(models.Model):
-    IARNo = models.CharField(max_length=50, primary_key=True)
-    Supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    Item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    PurchaseOrder = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    RequisitioningOffice = models.CharField(max_length=50)
-    ResCenterCode = models.CharField(max_length=10)
+    iar_no = models.CharField(max_length=50, primary_key=True)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    requisitioning_office = models.CharField(max_length=50)
+    res_center_ode = models.CharField(max_length=10)
     # maybe create an invoice models soon
-    InvoiceNo = models.CharField(max_length=10)
-    DateInspected = models.DateTimeField()
-    DateReceived = models.DateTimeField()
-    IsInspectedAndVerified = models.CharField(max_length=10)
-    IsComplete = models.CharField(max_length=10)
-    IsPartial = models.CharField(max_length=10)
+    invoice_no = models.CharField(max_length=10)
+    date_inspected = models.DateTimeField()
+    date_received = models.DateTimeField()
+    is_inspected_and_verified = models.CharField(max_length=10)
+    is_complete = models.CharField(max_length=10)
+    is_partial = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.IARNo} {self.ItemNo}'
+        return f'{self.iar_no} {self.item_no}'
 
 
 class RequisitionIssueSlip(models.Model):
-    RISNo = models.CharField(max_length=50, primary_key=True)
-    Item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    ResCenterCode = models.CharField(max_length=10)
-    Division = models.CharField(max_length=50)
-    Office = models.CharField(max_length=50)
-    IsStockAvailable = models.CharField(max_length=10)
-    Quantity = models.CharField(max_length=10)
-    Remarks = models.CharField(max_length=100)
-    Purpose = models.CharField(max_length=100)
-    RequestedBy = models.CharField(max_length=10)
-    ApprovedBy = models.CharField(max_length=10)
-    IssuedBy = models.CharField(max_length=10)
-    RecievedBy = models.CharField(max_length=10)
+    ris_no = models.CharField(max_length=50, primary_key=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    res_center_code = models.CharField(max_length=10)
+    division = models.CharField(max_length=50)
+    office = models.CharField(max_length=50)
+    is_stock_available = models.CharField(max_length=10)
+    quantity = models.CharField(max_length=10)
+    remarks = models.CharField(max_length=100)
+    purpose = models.CharField(max_length=100)
+    requested_by = models.CharField(max_length=10)
+    approved_by = models.CharField(max_length=10)
+    issued_by = models.CharField(max_length=10)
+    recieved_by = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.RISNo} {self.Office}'
+        return f'{self.ris_no} {self.office}'

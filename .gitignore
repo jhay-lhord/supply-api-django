@@ -16,6 +16,9 @@ conventional-commit-cheatsheet.md
 git-command-cheatsheet.md
 django-naming-convention.md
 
+### Migrations ###
+api/migrations/*.py
+
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
  SupplyAPI/staticfiles/
