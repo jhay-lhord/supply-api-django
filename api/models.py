@@ -1,5 +1,44 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class CustomUserManager(BaseUserManager):
+
+    def create(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('Email is required')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        # Ensure is_superuser and is_staff are True for superuser
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        # Create a new superuser
+        return self.create_user(email, password, **extra_fields)
+
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(max_length=254, unique=True)
+    is_active = models.BooleanField(default=False)
+    # Specify the custom user manager
+    objects = CustomUserManager()
+    # Set username to None to effectively ignore it
+    username = None
+    # Set the email as the unique identifier
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return f'{str(self.id)} - {self.email}'
 
 
 class Item(models.Model):
@@ -18,7 +57,7 @@ class Item(models.Model):
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     item_no = models.ForeignKey(Item, on_delete=models.CASCADE)
     res_center_code = models.CharField(max_length=10)
     purpose = models.CharField(max_length=50)

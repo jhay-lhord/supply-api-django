@@ -1,20 +1,83 @@
 from django.contrib.auth.models import User
-from rest_framework import generics
+from django.contrib.sites.shortcuts import get_current_site
+from django.db import IntegrityError
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import *
+from .resend import send_mail
 from .serializers import *
+from .serializers import CreateUserSerializer
+from .tokens import get_tokens_for_user, token_decoder
 
 
-class CreateUserView(generics.CreateAPIView):
+class RegisterUserAPIView(generics.CreateAPIView):
     """
-    Create a new User
+    Register a new User
     """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = CreateUserSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = CreateUserSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            print('is valid but same email')
+            try:
+                user = serializer.save()
+                token = get_tokens_for_user(user)
+                # Get the current domain
+                current_site = get_current_site(request)
+                activation_link = f'http://{current_site.domain}/api/user/activate/{token["access"]}'
+
+                message_html = f'<p>Please activate your account by clicking the button below</p> <br><button><a href={activation_link}/>Activate</></button>'  # noqa: E501 ignore the line too long rule in flake8
+                # Send activation email
+                send_mail(
+                    request.data['email'],
+                    'Activate your Account',
+                    message_html,
+                )
+                print(f'returned data after registeing {serializer.data}')
+            except IntegrityError as e:
+                if 'duplicate key value violates unique constraint' in str(e):
+                    return Response({'detail': 'A user with this email already exists.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({'detail': 'An error occured while creating the user'},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            print(serializer.errors)
+
+
+class ActivateUserAPIView(APIView):
+    """
+    Activate a new registered user
+    """
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request, token):
+        # Decode the token to get the user id
+        user_id = token_decoder(token)
+
+        # Attempt to retrieve the user and activate the account
+        try:
+            user = get_object_or_404(User, pk=user_id)
+            user.is_active = True
+            user.save()
+            return render(request, 'activation_success.html', status=status.HTTP_200_OK)
+        except Http404:
+            return render(request, 'activation_failed.html', status=status.HTTP_400_BAD_REQUEST)
 
 
 class ItemList(generics.ListCreateAPIView):
