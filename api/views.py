@@ -29,7 +29,6 @@ class RegisterUserAPIView(generics.CreateAPIView):
 
         if serializer.is_valid():
 
-            print('is valid but same email')
             try:
                 user = serializer.save()
                 token = get_tokens_for_user(user)
@@ -39,11 +38,11 @@ class RegisterUserAPIView(generics.CreateAPIView):
 
                 message_html = f'<p>Please activate your account by clicking the button below</p> <br><button><a href={activation_link}/>Activate</></button>'  # noqa: E501 ignore the line too long rule in flake8
                 # Send activation email
-                send_mail(
-                    request.data['email'],
-                    'Activate your Account',
-                    message_html,
-                )
+                # send_mail(
+                #     request.data['email'],
+                #     'Activate your Account',
+                #     message_html,
+                # )
                 print(f'returned data after registeing {serializer.data}')
             except IntegrityError as e:
                 if 'duplicate key value violates unique constraint' in str(e):
@@ -56,7 +55,7 @@ class RegisterUserAPIView(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:
-            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ActivateUserAPIView(APIView):
