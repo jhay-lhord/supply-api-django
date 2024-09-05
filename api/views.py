@@ -38,11 +38,11 @@ class RegisterUserAPIView(generics.CreateAPIView):
 
                 message_html = f'<p>Please activate your account by clicking the button below</p> <br><button><a href={activation_link}/>Activate</></button>'  # noqa: E501 ignore the line too long rule in flake8
                 # Send activation email
-                # send_mail(
-                #     request.data['email'],
-                #     'Activate your Account',
-                #     message_html,
-                # )
+                send_mail(
+                    request.data['email'],
+                    'Activate your Account',
+                    message_html,
+                )
                 print(f'returned data after registeing {serializer.data}')
             except IntegrityError as e:
                 if 'duplicate key value violates unique constraint' in str(e):
