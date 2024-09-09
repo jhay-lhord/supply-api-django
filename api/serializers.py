@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from .models import *
 
 User = get_user_model()
+
+
 class CreateUserSerializer(serializers.ModelSerializer):
     print('serializer started')
     first_name = serializers.CharField(required=True)
@@ -30,12 +32,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         email = validated_data.pop('email')
         password = validated_data.pop('password')
 
-        user = User.objects.create(
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            password = password
-        )
+        user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
         user.is_active = False
         user.set_password(password)
         user.save()
