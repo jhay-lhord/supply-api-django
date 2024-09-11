@@ -86,8 +86,8 @@ class LoginTokenObtainPairView(TokenObtainPairView):
     Login User credentials
     """
     serializer_class = LoginTokenObtainPairSerializer
-    authentication_classes = []
-    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = []
 
 
 class ItemList(generics.ListCreateAPIView):
