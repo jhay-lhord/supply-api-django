@@ -8,6 +8,12 @@ class CustomRefreshToken(RefreshToken):
     @classmethod
     def for_user(cls, user):
         token = super().for_user(user)
+        role = user.groups.first()
+        # include the role in the token payload so that the front end can access it
+        if (role):
+            token['role'] = role.name
+        else:
+            token['role'] = None
         token['email'] = user.email  # Add the email to the token payload
         return token
 

@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import *
 from .resend import send_mail
@@ -32,6 +33,7 @@ class RegisterUserAPIView(generics.CreateAPIView):
             try:
                 user = serializer.save()
                 token = get_tokens_for_user(user)
+
                 # Get the current domain
                 current_site = get_current_site(request)
                 activation_link = f'http://{current_site.domain}/api/user/activate/{token["access"]}'
@@ -77,6 +79,15 @@ class ActivateUserAPIView(APIView):
             return render(request, 'activation_success.html', status=status.HTTP_200_OK)
         except Http404:
             return render(request, 'activation_failed.html', status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginTokenObtainPairView(TokenObtainPairView):
+    """
+    Login User credentials
+    """
+    serializer_class = LoginTokenObtainPairSerializer
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
 
 class ItemList(generics.ListCreateAPIView):
