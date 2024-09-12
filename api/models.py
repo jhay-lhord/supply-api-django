@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+import pyotp
 
 
 class CustomUserManager(BaseUserManager):
@@ -29,16 +31,42 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
     is_active = models.BooleanField(default=False)
+    otp_code = models.CharField(null=True, blank=True)
+    otp_expiration = models.DateTimeField(null=True, blank=True)
+    otp_secret = models.CharField(max_length=32, null=True, blank=True)
+
     # Specify the custom user manager
     objects = CustomUserManager()
+
     # Set username to None to effectively ignore it
     username = None
+
     # Set the email as the unique identifier
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
         return f'{str(self.id)} - {self.email}'
+
+    def generate_otp(self):
+        """Generates OTP and sets expiration time."""
+        totp = pyotp.TOTP(self.otp_secret)
+        self.otp_code = totp.now()
+        self.otp_expiration = timezone.now() + timezone.timedelta(minutes=5)
+        self.save()
+        print(f'The OTP is generate successfully: {self.otp_code}')
+        return self.otp_code
+
+    def verify_otp(self, otp_code):
+        """Verifies the OTP code and checks its expiration."""
+        if self.otp_code == otp_code and timezone.now() < self.otp_expiration:
+            # Clear the OTP after verification
+            self.otp_code = None
+            self.otp_expiration = None
+            self.save()
+            print(f'The OTP is successfully verify')
+            return True
+        return False
 
 
 class Item(models.Model):

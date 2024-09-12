@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+import pyotp
 
-from .groups import assign_role
+from .groups import assign_role_and_save
 from .models import *
 
 User = get_user_model()
@@ -37,10 +38,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
         user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
         user.is_active = False
+
+        # generate secret after registration
+        user.otp_secret = pyotp.random_base32()
+        print(f'otp secret created: {user.otp_secret}')
         user.set_password(password)
 
-        # assign the role to the user
-        assign_role(user, role)
+        # assign the role and save the user
+        assign_role_and_save(user, role)
         return user
 
 
@@ -57,6 +62,10 @@ class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email  # Add email to the token
 
         return token
+
+class OTPVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp_code = serializers.CharField(max_length=6)
 
 
 class ItemSerializer(serializers.ModelSerializer):

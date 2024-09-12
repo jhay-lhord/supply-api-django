@@ -10,7 +10,7 @@ def create_groups():
             print(f'{role} Group Created')
 
 
-def assign_role(user, role_name):
+def assign_role_and_save(user, role_name):
     try:
         group = Group.objects.get(name=role_name)
         user.groups.add(group)

@@ -9,9 +9,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import *
-from .resend import send_mail
+from .resend import send_mail, send_OTP_mail
 from .serializers import *
 from .serializers import CreateUserSerializer
 from .tokens import get_tokens_for_user, token_decoder
@@ -88,6 +89,72 @@ class LoginTokenObtainPairView(TokenObtainPairView):
     serializer_class = LoginTokenObtainPairSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = []
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.user
+            print(f'User: {user}')
+
+            #generate OTP
+            user.generate_otp()
+            print(f'Generated OTP: {user.generate_otp}')
+
+            subject = 'Your OTP Code'
+            message_html = f'<p>Your OTP code is <strong>{user.otp_code}</strong>. It is valid for 5 minutes.</p>'
+
+            send_OTP_mail(user.email, subject, message_html )
+            return Response({
+                'message': 'OTP sent to your email, Please verify'
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OTPVerificationView(APIView):
+    permission_classes = [] 
+    authentication_classes = []
+    serializer_class = OTPVerificationSerializer
+    print('gana sa babaw')
+
+    def post(self, request):
+        serializer = OTPVerificationSerializer(data=request.data)
+        print('gana sa posty')
+
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            otp_code = serializer.validated_data['otp_code']
+            print(f'data: {otp_code}')
+            print(f'Email: {email}')
+
+            try:
+                user = CustomUser.objects.get(email=email)
+
+                if user.verify_otp(otp_code):
+                    refresh = RefreshToken.for_user(user)
+
+                    # Add custom claims to the token (email and role)
+                    role = user.groups.first()
+                    refresh['role'] = role.name if role else None
+                    refresh['email'] = user.email
+                    
+                    return Response({
+                        'refresh': str(refresh),
+                        'access' : str(refresh.access_token),
+                        'message': 'Login Successfully' 
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response({
+                        'error': 'Invalid or Expired OTP'
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            except CustomUser.DoesNotExist:
+                return Response({
+                    'error': 'User Does not Exist'
+                }, status=status.Http_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class ItemList(generics.ListCreateAPIView):
