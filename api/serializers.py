@@ -1,7 +1,7 @@
+import pyotp
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-import pyotp
 
 from .groups import assign_role_and_save
 from .models import *
@@ -62,6 +62,7 @@ class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email  # Add email to the token
 
         return token
+
 
 class OTPVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()

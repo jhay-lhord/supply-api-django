@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from api.views import ActivateUserAPIView, LoginTokenObtainPairView, RegisterUserAPIView, OTPVerificationView
+from api.views import ActivateUserAPIView, LoginTokenObtainPairView, OTPVerificationView, RegisterUserAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),

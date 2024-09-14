@@ -9,6 +9,7 @@ class ApiConfig(AppConfig):
     def ready(self):
         post_migrate.connect(run_create_groups, sender=self)
 
+
 def run_create_groups(sender, **kwargs):
     from .groups import create_groups
     create_groups()
