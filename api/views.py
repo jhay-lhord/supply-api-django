@@ -8,11 +8,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import *
-from .resend import send_mail, send_OTP_mail
+from .resend import send_mail_django
 from .serializers import *
 from .serializers import CreateUserSerializer
 from .tokens import get_tokens_for_user, token_decoder
@@ -40,19 +40,17 @@ class RegisterUserAPIView(generics.CreateAPIView):
                 activation_link = f'http://{current_site.domain}/api/user/activate/{token["access"]}'
 
                 message_html = f'<p>Please activate your account by clicking the button below</p> <br><button><a href={activation_link}/>Activate</></button>'  # noqa: E501 ignore the line too long rule in flake8
+                subject = 'Activate your Account'
+
                 # Send activation email
-                send_mail(
-                    request.data['email'],
-                    'Activate your Account',
-                    message_html,
-                )
-                print(f'returned data after registeing {serializer.data}')
+                send_mail_django(message_html, subject, user.email)
+
             except IntegrityError as e:
                 if 'duplicate key value violates unique constraint' in str(e):
-                    return Response({'detail': 'A user with this email already exists.'},
+                    return Response({'email': 'A user with this email already exists.'},
                                     status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response({'detail': 'An error occured while creating the user'},
+                    return Response({'error': 'An error occured while creating the user'},
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -95,38 +93,35 @@ class LoginTokenObtainPairView(TokenObtainPairView):
         try:
             serializer.is_valid(raise_exception=True)
             user = serializer.user
-            print(f'User: {user}')
 
-            #generate OTP
+            # generate OTP
             user.generate_otp()
-            print(f'Generated OTP: {user.generate_otp}')
 
             subject = 'Your OTP Code'
             message_html = f'<p>Your OTP code is <strong>{user.otp_code}</strong>. It is valid for 5 minutes.</p>'
 
-            send_OTP_mail(user.email, subject, message_html )
-            return Response({
-                'message': 'OTP sent to your email, Please verify'
-            }, status=status.HTTP_200_OK)
+            # send_OTP_mail(user.email, subject, message_html )
+            send_mail_django(message_html, subject, user.email)
+
+            return Response({'message': 'OTP sent to your email, Please verify'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OTPVerificationView(APIView):
-    permission_classes = [] 
+    """
+    OTP Verification View
+    """
+    permission_classes = []
     authentication_classes = []
     serializer_class = OTPVerificationSerializer
-    print('gana sa babaw')
 
     def post(self, request):
         serializer = OTPVerificationSerializer(data=request.data)
-        print('gana sa posty')
 
         if serializer.is_valid():
             email = serializer.validated_data['email']
             otp_code = serializer.validated_data['otp_code']
-            print(f'data: {otp_code}')
-            print(f'Email: {email}')
 
             try:
                 user = CustomUser.objects.get(email=email)
@@ -138,23 +133,18 @@ class OTPVerificationView(APIView):
                     role = user.groups.first()
                     refresh['role'] = role.name if role else None
                     refresh['email'] = user.email
-                    
+
                     return Response({
                         'refresh': str(refresh),
-                        'access' : str(refresh.access_token),
-                        'message': 'Login Successfully' 
-                    }, status=status.HTTP_200_OK)
+                        'access': str(refresh.access_token),
+                        'message': 'Login Successfully'
+                    },status=status.HTTP_200_OK)
                 else:
-                    return Response({
-                        'error': 'Invalid or Expired OTP'
-                    }, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': 'Invalid or Expired OTP'}, status=status.HTTP_400_BAD_REQUEST)
             except CustomUser.DoesNotExist:
-                return Response({
-                    'error': 'User Does not Exist'
-                }, status=status.Http_404_NOT_FOUND)
+                return Response({'error': 'User Does not Exist'}, status=status.Http_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class ItemList(generics.ListCreateAPIView):
@@ -163,8 +153,8 @@ class ItemList(generics.ListCreateAPIView):
     """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
 
 
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -183,8 +173,8 @@ class PurchaseRequestList(generics.ListCreateAPIView):
     """
     queryset = PurchaseRequest.objects.select_related('user').all()
     serializer_class = PurchaseRequestSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
 
 
 class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -223,8 +213,8 @@ class PurchaseOrderList(generics.ListCreateAPIView):
     """
     queryset = PurchaseOrder.objects.select_related('item').all()
     serializer_class = PurchaseOrderSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
 
 
 class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
