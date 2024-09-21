@@ -31,7 +31,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
     is_active = models.BooleanField(default=False)
-    otp_code = models.CharField(null=True, blank=True)
+    otp_code = models.CharField(max_length=10, null=True, blank=True)
     otp_expiration = models.DateTimeField(null=True, blank=True)
     otp_secret = models.CharField(max_length=32, null=True, blank=True)
 
@@ -162,3 +162,83 @@ class RequisitionIssueSlip(models.Model):
 
     def __str__(self):
         return f'{self.ris_no} {self.office}'
+
+
+class Budget(models.Model):
+    budget_no = models.CharField(max_length=50)
+    department = models.CharField(max_length=50)
+    budget_allocation = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f'Budget: {self.budget_allocation}'
+
+
+class Bidding(models.Model):
+    bidding_no = models.CharField(max_length=50)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    total_amount = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f'Bidding: Supplier({self.supplier}) with the total amount of {self.total_amount}'
+
+class RequestForQoutation(models.Model):
+    rfq_no = models.CharField(max_length=50)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Qoutation: {self.qoutation_no}'
+
+class AbstractOfQoutation(models.Model):
+    afq_no = models.CharField(max_length=50)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    total_amount = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
+
+class RecentActivity(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'User Activity: {self.purchase_request}, {self.purchase_order}'
+
+
+# Dashboard
+class InventoryManagement(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'User Inventory: {self.purchase_order}'
+
+
+class SupplyDashboardManagement(models.Model):
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return f'Purchase Request:{self.purchase_request}, Purchase Order: {self.purchase_order}, Qoutation: {self.qoutation}'
+
+
+class BudgetDashboardManagement(models.Model):
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f' Budget: {self.budget}'
+
+
+class BACDashboardManagement(models.Model):
+    request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.C)
+    abstract_of_qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Request for Qoutation: {self.request_for_qoutation}, Abstract Of Qoutation: {self.abstract_of_qoutation}'
