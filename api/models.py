@@ -237,7 +237,7 @@ class BudgetDashboardManagement(models.Model):
 
 
 class BACDashboardManagement(models.Model):
-    request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.C)
+    request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
 
     def __str__(self):
