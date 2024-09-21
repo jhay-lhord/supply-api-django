@@ -138,7 +138,8 @@ class OTPVerificationView(APIView):
                         'refresh': str(refresh),
                         'access': str(refresh.access_token),
                         'message': 'Login Successfully'
-                    },status=status.HTTP_200_OK)
+                    },
+                                    status=status.HTTP_200_OK)
                 else:
                     return Response({'error': 'Invalid or Expired OTP'}, status=status.HTTP_400_BAD_REQUEST)
             except CustomUser.DoesNotExist:
