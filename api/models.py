@@ -87,6 +87,7 @@ class PurchaseRequest(models.Model):
     item_no = models.ForeignKey(Item, on_delete=models.CASCADE)
     res_center_code = models.CharField(max_length=10)
     purpose = models.CharField(max_length=50)
+    status = models.CharField(max_length=20, default='pending')
     requested_by = models.CharField(max_length=50)
     approved_by = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
