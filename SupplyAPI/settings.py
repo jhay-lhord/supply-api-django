@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import socket
 from datetime import timedelta
 from pathlib import Path
 
@@ -95,16 +96,35 @@ WSGI_APPLICATION = 'SupplyAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+IS_LOCALHOST = socket.gethostname() in ['localhost', '127.0.0.1', '::1']
+
+ENVIRONMENT = os.getenv('DJANGO_ENV', 'development')
+
+print(f'Running in {ENVIRONMENT} Mode.')
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': {}
 }
 
-database_url = os.getenv('DB_RENDER_URL')
+user = os.getenv('DB_USER')
 
-DATABASES['default'] = dj_database_url.parse(database_url)
+print(f'The Username of the postgres database is {user}')
+
+if IS_LOCALHOST or ENVIRONMENT == 'development':
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD':os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PORT'),
+        }
+    }
+else:
+    database_url = os.getenv('DB_RENDER_URL')
+
+    DATABASES['default'] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
