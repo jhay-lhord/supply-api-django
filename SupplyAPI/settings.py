@@ -121,6 +121,18 @@ if IS_LOCALHOST or ENVIRONMENT == 'development':
         'PORT': os.getenv('PORT'),
         }
     }
+elif ENVIRONMENT == 'test':
+     DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_TEST_NAME'),
+        'USER': os.getenv('DB_TEST_USER'),
+        'PASSWORD':os.getenv('DB_TEST_PASSWORD'),
+        'HOST': os.getenv('TEST_HOST'),
+        'PORT': os.getenv('TEST_PORT'),
+        }
+    }
+
 else:
     database_url = os.getenv('DB_RENDER_URL')
 
