@@ -83,8 +83,6 @@ class Item(models.Model):
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    item_no = models.ForeignKey(Item, on_delete=models.CASCADE)
     res_center_code = models.CharField(max_length=10)
     purpose = models.CharField(max_length=50)
     status = models.CharField(max_length=20, default='pending')
@@ -93,7 +91,11 @@ class PurchaseRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.pr_no} {self.user.username}'
+        return f'{self.pr_no}'
+
+class PurchaseRequestItem(models.Model):
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
 
 class Supplier(models.Model):

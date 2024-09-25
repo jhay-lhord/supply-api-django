@@ -2,6 +2,8 @@ import pyotp
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.core.serializers import serialize
+
 
 from .groups import assign_role_and_save
 from .models import *
@@ -82,6 +84,38 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
         model = PurchaseRequest
         fields = '__all__'
 
+
+class PurchaseRequestItemSerializer(serializers.ModelSerializer):
+    item_no = serializers.SerializerMethodField()
+    pr_no = serializers.SerializerMethodField()
+    class Meta:
+        model = PurchaseRequestItem
+        fields = '__all__'
+
+    def get_item_no(self, obj):
+        # Serialize the related Item object
+        json_data = serialize('json', [obj])
+        print(json_data)
+        item = obj.item
+        return {
+            'item_no': item.item_no,
+            'item_description': item.item_description,
+            'quantity': item.quantity,
+            'unit_cost': item.unit_cost,
+            'total_cost': item.total_cost,
+        }
+    def get_pr_no(self, obj):
+        # Serialize the related PurchaseRequest object
+        json_data = serialize('json', [obj])
+        print(json_data)
+        pr = obj.purchase_request
+        return {
+            'pr_no': pr.pr_no,
+            'purpose': pr.purpose,
+            'requested_by': pr.requested_by,
+            'approved_by': pr.approved_by,
+            'status': pr.status,
+        }
 
 class SupplierSerializer(serializers.ModelSerializer):
 

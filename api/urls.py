@@ -15,4 +15,5 @@ urlpatterns = [
     path('inspection-report/<str:pk>', InspectionAcceptanceReportDetail.as_view()),
     path('requisition-slip/', RequisitionIssueSlipList.as_view()),
     path('requisition-slip/<str:pk>', RequisitionIssueSlipDetail.as_view()),
+    path('purchase-request-item/', PurchaseRequestItemList.as_view()),
 ]

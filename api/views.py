@@ -7,6 +7,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -147,6 +148,15 @@ class OTPVerificationView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class PurchaseRequestItemList(generics.ListCreateAPIView):
+    """
+    List all Purchase Request Associated with Item
+    """
+    # queryset = PurchaseRequestItem.objects.select_related('purchase_request', 'item')
+    queryset = PurchaseRequestItem.objects.all()
+    serializer_class = PurchaseRequestItemSerializer
+    authentication_classes = []
+    permission_classes = []
 
 class ItemList(generics.ListCreateAPIView):
     """
@@ -172,7 +182,7 @@ class PurchaseRequestList(generics.ListCreateAPIView):
     """
     List all Purchase request, or create a new Purchase request
     """
-    queryset = PurchaseRequest.objects.select_related('user').all()
+    queryset = PurchaseRequest.objects.all()
     serializer_class = PurchaseRequestSerializer
     authentication_classes = []
     permission_classes = []
@@ -182,7 +192,7 @@ class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or Delete a Purchase request instance
     """
-    queryset = PurchaseRequest.objects.select_related('user').all()
+    queryset = PurchaseRequest.objects.all()
     serializer_class = PurchaseRequestSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
