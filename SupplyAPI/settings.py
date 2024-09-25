@@ -102,9 +102,7 @@ ENVIRONMENT = os.getenv('DJANGO_ENV', 'development')
 
 print(f'Running in {ENVIRONMENT} Mode.')
 
-DATABASES = {
-    'default': {}
-}
+DATABASES = {'default': {}}
 
 user = os.getenv('DB_USER')
 
@@ -112,24 +110,24 @@ print(f'The Username of the postgres database is {user}')
 
 if IS_LOCALHOST or ENVIRONMENT == 'development':
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD':os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'),
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('HOST'),
+            'PORT': os.getenv('PORT'),
         }
     }
 elif ENVIRONMENT == 'test':
-     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_TEST_NAME'),
-        'USER': os.getenv('DB_TEST_USER'),
-        'PASSWORD':os.getenv('DB_TEST_PASSWORD'),
-        'HOST': os.getenv('TEST_HOST'),
-        'PORT': os.getenv('TEST_PORT'),
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_TEST_NAME'),
+            'USER': os.getenv('DB_TEST_USER'),
+            'PASSWORD': os.getenv('DB_TEST_PASSWORD'),
+            'HOST': os.getenv('TEST_HOST'),
+            'PORT': os.getenv('TEST_PORT'),
         }
     }
 
