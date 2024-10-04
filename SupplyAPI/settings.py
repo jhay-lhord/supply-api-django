@@ -100,13 +100,11 @@ IS_LOCALHOST = socket.gethostname() in ['localhost', '127.0.0.1', '::1']
 
 ENVIRONMENT = os.getenv('DJANGO_ENV', 'development')
 
-print(f'Running in {ENVIRONMENT} Mode.')
+print(f'\nRunning in {ENVIRONMENT} Mode.\n')
 
 DATABASES = {'default': {}}
 
 user = os.getenv('DB_USER')
-
-print(f'The Username of the postgres database is {user}')
 
 if IS_LOCALHOST or ENVIRONMENT == 'development':
     DATABASES = {
