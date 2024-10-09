@@ -67,19 +67,6 @@ class CustomUser(AbstractUser):
         return False
 
 
-class Item(models.Model):
-    item_no = models.CharField(max_length=50, primary_key=True)
-    item_property = models.CharField(max_length=10)
-    unit = models.CharField(max_length=10)
-    item_description = models.CharField(max_length=50)
-    quantity = models.CharField(max_length=10)
-    unit_cost = models.CharField(max_length=10)
-    total_cost = models.CharField(max_length=10)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.item_description
-
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
@@ -93,6 +80,19 @@ class PurchaseRequest(models.Model):
     def __str__(self):
         return f'{self.pr_no}'
 
+class Item(models.Model):
+    purchase_request = models.ForeignKey(PurchaseRequest, related_name="items", on_delete=models.CASCADE)
+    item_no = models.CharField(max_length=50)
+    item_property = models.CharField(max_length=10)
+    unit = models.CharField(max_length=10)
+    item_description = models.CharField(max_length=50)
+    quantity = models.CharField(max_length=10)
+    unit_cost = models.CharField(max_length=10)
+    total_cost = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.item_description
 
 class PurchaseRequestItem(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
