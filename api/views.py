@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import *
-from .resend import send_mail_django
+from .resend import send_mail_resend
 from .serializers import *
 from .serializers import CreateUserSerializer
 from .tokens import get_tokens_for_user, token_decoder
@@ -43,7 +43,7 @@ class RegisterUserAPIView(generics.CreateAPIView):
                 subject = 'Activate your Account'
 
                 # Send activation email
-                send_mail_django(message_html, subject, user.email)
+                send_mail_resend(user.email, subject, message_html)
 
             except IntegrityError as e:
                 if 'duplicate key value violates unique constraint' in str(e):
@@ -101,7 +101,7 @@ class LoginTokenObtainPairView(TokenObtainPairView):
             message_html = f'<p>Your OTP code is <strong>{user.otp_code}</strong>. It is valid for 5 minutes.</p>'
 
             # send_OTP_mail(user.email, subject, message_html )
-            send_mail_django(message_html, subject, user.email)
+            send_mail_resend(user.email, subject, message_html)
 
             return Response({'message': 'OTP sent to your email, Please verify'}, status=status.HTTP_200_OK)
         except Exception as e:
