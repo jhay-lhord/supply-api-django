@@ -70,11 +70,11 @@ class CustomUser(AbstractUser):
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
-    res_center_code = models.CharField(max_length=10)
-    purpose = models.CharField(max_length=50)
-    status = models.CharField(max_length=20, default='pending')
-    requested_by = models.CharField(max_length=50)
-    approved_by = models.CharField(max_length=50)
+    res_center_code = models.CharField(max_length=50)
+    purpose = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, default='pending')
+    requested_by = models.CharField(max_length=255)
+    approved_by = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
