@@ -66,8 +66,6 @@ class CustomUser(AbstractUser):
             return True
         return False
 
-
-
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
     res_center_code = models.CharField(max_length=50)
@@ -83,7 +81,7 @@ class PurchaseRequest(models.Model):
 class Item(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, related_name="items", on_delete=models.CASCADE)
     item_no = models.CharField(max_length=50)
-    item_property = models.CharField(max_length=10)
+    stock_property_no = models.CharField(max_length=10)
     unit = models.CharField(max_length=10)
     item_description = models.CharField(max_length=50)
     quantity = models.CharField(max_length=10)
