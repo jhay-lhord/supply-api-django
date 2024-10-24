@@ -147,6 +147,15 @@ class OTPVerificationView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UserList(generics.ListCreateAPIView):
+    """
+    List all Users or Create new User
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = UserListSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
 class PurchaseRequestItemList(generics.ListCreateAPIView):
     """

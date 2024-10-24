@@ -48,6 +48,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
         assign_role_and_save(user, role)
         return user
 
+class UserListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
 
