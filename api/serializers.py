@@ -49,10 +49,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return user
 
 class UserListSerializer(serializers.ModelSerializer):
+    role  = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = '__all__'
+    def get_role(self, obj):
+        # This method retrieves the group names as a comma-separated string
+        return ', '.join(obj.groups.values_list('name', flat=True))
 
 class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
 
