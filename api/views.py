@@ -39,8 +39,23 @@ class RegisterUserAPIView(generics.CreateAPIView):
                 current_site = get_current_site(request)
                 activation_link = f'http://{current_site.domain}/api/user/activate/{token["access"]}'
 
-                message_html = f'<p>Please activate your account by clicking the button below</p> <br><button><a href={activation_link}/>Activate</></button>'  # noqa: E501 ignore the line too long rule in flake8
-                subject = 'Activate your Account'
+                message_html =  f'''<h2 style="color: #333333;">Account Created Successfully - Pending Activation</h2>
+                                <p>Dear <strong>{user.first_name}</strong>,</p>
+                                <p> Your account has been successfully created! To complete the setup, an administrator needs to activate your account. 
+                                You will receive a email notification once the activation is complete.</p>
+            
+                                <p>If you have any questions or need assistance, feel free to reach out to our support team at <a href="mailto:manilajaylord_24@gmail.com">our support Email</a>.</p>
+                                <p>We look forward to serving you!</p>
+
+                                 <p>
+                                    <em style="color: #999999;">This is a system-generated email. Please do not reply directly to this message.</em>
+                                </p>
+
+                                <p>Best regards,</p>
+                                <p>Supply Office<br>
+                                Team SlapSoil<br>
+                                </p>'''
+                subject = "Account Created Successfully - Pending Activation"
 
                 # Send activation email
                 send_mail_resend(user.email, subject, message_html)
@@ -128,6 +143,9 @@ class OTPVerificationView(APIView):
 
                 if user.verify_otp(otp_code):
                     refresh = RefreshToken.for_user(user)
+                    user.last_login = timezone.now()
+                    user.save()
+                    print(user.last_login)
 
                     # Add custom claims to the token (email and role)
                     role = user.groups.first()
@@ -156,6 +174,42 @@ class UserList(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a User
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = UserListSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def partial_update(self, request, *args, **kwargs):
+        user = self.get_object()
+        # Check if a specific field 'is_active' has changed
+        is_active_before = user.is_active
+
+        response = super().partial_update(request, *args, **kwargs)
+
+        user.refresh_from_db()  # Refresh user to get the updated state
+        message_html =  f'''<h2 style="color: #333333;">Account Activation Successfull</h2>
+            <p>Dear <strong>{user.first_name}</strong>,</p>
+            <p>We are pleased to inform you that your account has been successfully activated. You can now access all the features and services available to you.</p>
+            <p>To get started, please log in to your account</p>
+            
+            <p>If you have any questions or need assistance, feel free to reach out to our support team at <a href="mailto:manilajaylord_24@gmail.com">our support Email</a>.</p>
+            <p>We look forward to serving you!</p>
+            <p>
+                <em style="color: #999999;">This is a system-generated email. Please do not reply directly to this message.</em>
+            </p>
+            <p>Best regards,</p>
+            <p>Supply Office<br>
+            Team SlapSoil<br>
+            </p>'''
+        if not is_active_before and user.is_active:
+            send_mail_resend(user.email, "Account Activation Successfull", message_html)
+
+        return response
 
 class PurchaseRequestItemList(generics.ListCreateAPIView):
     """
