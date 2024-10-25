@@ -145,12 +145,12 @@ class OTPVerificationView(APIView):
                     refresh = RefreshToken.for_user(user)
                     user.last_login = timezone.now()
                     user.save()
-                    print(user.last_login)
 
                     # Add custom claims to the token (email and role)
                     role = user.groups.first()
                     refresh['role'] = role.name if role else None
                     refresh['email'] = user.email
+                    refresh['fullname'] = f'{user.first_name} {user.last_name}'
 
                     return Response({
                         'refresh': str(refresh),
