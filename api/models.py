@@ -80,7 +80,7 @@ class PurchaseRequest(models.Model):
 
 class Item(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, related_name="items", on_delete=models.CASCADE)
-    item_no = models.CharField(max_length=50)
+    item_no = models.CharField(primary_key=True)
     stock_property_no = models.CharField(max_length=10)
     unit = models.CharField(max_length=10)
     item_description = models.CharField(max_length=50)
