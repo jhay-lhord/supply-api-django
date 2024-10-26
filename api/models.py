@@ -81,12 +81,12 @@ class PurchaseRequest(models.Model):
 class Item(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, related_name="items", on_delete=models.CASCADE)
     item_no = models.CharField(primary_key=True)
-    stock_property_no = models.CharField(max_length=10)
-    unit = models.CharField(max_length=10)
-    item_description = models.CharField(max_length=50)
-    quantity = models.CharField(max_length=10)
-    unit_cost = models.CharField(max_length=10)
-    total_cost = models.CharField(max_length=10)
+    stock_property_no = models.CharField(max_length=20)
+    unit = models.CharField(max_length=255)
+    item_description = models.CharField(max_length=255)
+    quantity = models.CharField(max_length=50)
+    unit_cost = models.CharField(max_length=50)
+    total_cost = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
