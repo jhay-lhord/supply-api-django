@@ -125,7 +125,6 @@ class PurchaseOrder(models.Model):
 class InspectionAcceptanceReport(models.Model):
     iar_no = models.CharField(max_length=50, primary_key=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
     requisitioning_office = models.CharField(max_length=50)
     res_center_ode = models.CharField(max_length=10)
@@ -139,12 +138,11 @@ class InspectionAcceptanceReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.iar_no} {self.item_no}'
+        return f'{self.iar_no}'
 
 
 class RequisitionIssueSlip(models.Model):
     ris_no = models.CharField(max_length=50, primary_key=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     res_center_code = models.CharField(max_length=10)
     division = models.CharField(max_length=50)
     office = models.CharField(max_length=50)
@@ -213,7 +211,6 @@ class InventoryManagement(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 
     def __str__(self):
