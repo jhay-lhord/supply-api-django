@@ -92,10 +92,6 @@ class Item(models.Model):
     def __str__(self):
         return self.item_description
 
-class PurchaseRequestItem(models.Model):
-    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-
 
 class Supplier(models.Model):
     supplier_no = models.CharField(max_length=50, primary_key=True)

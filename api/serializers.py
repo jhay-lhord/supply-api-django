@@ -92,36 +92,6 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PurchaseRequestItemSerializer(serializers.ModelSerializer):
-    item_no = serializers.SerializerMethodField()
-    pr_no = serializers.SerializerMethodField()
-
-    class Meta:
-        model = PurchaseRequestItem
-        fields = '__all__'
-
-    def get_item_no(self, obj):
-        item = obj.item
-        return {
-            'item_no': item.item_no,
-            'item_description': item.item_description,
-            'quantity': item.quantity,
-            'unit_cost': item.unit_cost,
-            'total_cost': item.total_cost,
-        }
-
-    def get_pr_no(self, obj):
-
-        pr = obj.purchase_request
-        return {
-            'pr_no': pr.pr_no,
-            'purpose': pr.purpose,
-            'requested_by': pr.requested_by,
-            'approved_by': pr.approved_by,
-            'status': pr.status,
-        }
-
-
 class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:

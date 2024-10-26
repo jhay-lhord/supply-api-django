@@ -211,16 +211,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
         return response
 
-class PurchaseRequestItemList(generics.ListCreateAPIView):
-    """
-    List all Purchase Request Associated with Item
-    """
-    # queryset = PurchaseRequestItem.objects.select_related('purchase_request', 'item')
-    queryset = PurchaseRequestItem.objects.all()
-    serializer_class = PurchaseRequestItemSerializer
-    authentication_classes = []
-    permission_classes = []
-
 
 class ItemList(generics.ListCreateAPIView):
     """
