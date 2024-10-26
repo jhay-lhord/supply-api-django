@@ -109,7 +109,7 @@ class Supplier(models.Model):
 
 class PurchaseOrder(models.Model):
     po_no = models.CharField(max_length=50, primary_key=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     supplier_no = models.CharField(max_length=10)
     address = models.CharField(max_length=100)
     place_of_delivery = models.CharField(max_length=100)
