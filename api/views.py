@@ -252,6 +252,26 @@ class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class RequestForQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a Request For Qoutation instance
+    """
+    queryset = RequestForQoutation.objects.all()
+    serializer_class = RequestForQoutationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class RequestForQoutationList(generics.RetrieveUpdateDestroyAPIView):
+    """
+    List all Request for Qoutation, or create a new Request For Qoutation
+    """
+    queryset = RequestForQoutation.objects.all()
+    serializer_class = RequestForQoutationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class SupplierList(generics.ListCreateAPIView):
     """
     List all Supplier, or create a new Supplier

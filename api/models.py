@@ -138,7 +138,7 @@ class InspectionAcceptanceReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.iar_no}'
+        return f'{self.iar_no}' 
 
 
 class RequisitionIssueSlip(models.Model):
@@ -180,8 +180,14 @@ class Bidding(models.Model):
 
 
 class RequestForQoutation(models.Model):
-    rfq_no = models.CharField(max_length=50)
+    rfq_no = models.CharField(max_length=50, primary_key=True)
+    supplier_name = models.CharField(max_length=255)
+    supplier_address = models.CharField(max_length=255)
+    tin = models.CharField(max_length=50, null=True, blank=True)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    unit_price = models.CharField(max_length=255)
+    brand_model = models.CharField(max_length=255)
 
     def __str__(self):
         return f'Qoutation: {self.qoutation_no}'

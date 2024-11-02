@@ -91,6 +91,12 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
         model = PurchaseRequest
         fields = '__all__'
 
+class RequestForQoutationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RequestForQoutation
+        fields = '__all__'
+
 
 class SupplierSerializer(serializers.ModelSerializer):
 
