@@ -262,7 +262,7 @@ class RequestForQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class RequestForQoutationList(generics.RetrieveUpdateDestroyAPIView):
+class RequestForQoutationList(generics.ListCreateAPIView):
     """
     List all Request for Qoutation, or create a new Request For Qoutation
     """
