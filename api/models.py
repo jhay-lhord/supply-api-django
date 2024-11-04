@@ -180,7 +180,7 @@ class Bidding(models.Model):
 
 
 class RequestForQoutation(models.Model):
-    rfq_no = models.CharField(max_length=50, primary_key=True)
+    rfq_no = models.CharField(max_length=255)
     supplier_name = models.CharField(max_length=255)
     supplier_address = models.CharField(max_length=255)
     tin = models.CharField(max_length=50, null=True, blank=True)
@@ -239,9 +239,9 @@ class BudgetDashboardManagement(models.Model):
         return f' Budget: {self.budget}'
 
 
-class BACDashboardManagement(models.Model):
-    request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
-    abstract_of_qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
+# class BACDashboardManagement(models.Model):
+#     request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+#     abstract_of_qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'{self.request_for_qoutation}, {self.abstract_of_qoutation}'
+#     def __str__(self):
+#         return f'{self.request_for_qoutation}, {self.abstract_of_qoutation}'
