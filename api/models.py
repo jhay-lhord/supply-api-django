@@ -181,6 +181,7 @@ class Bidding(models.Model):
 
 class RequestForQoutation(models.Model):
     rfq_no = models.CharField(max_length=255)
+    rfq_count = models.CharField(max_length=10)
     supplier_name = models.CharField(max_length=255)
     supplier_address = models.CharField(max_length=255)
     tin = models.CharField(max_length=50, null=True, blank=True)
