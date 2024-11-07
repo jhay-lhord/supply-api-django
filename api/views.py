@@ -258,7 +258,7 @@ class ItemsDetail(APIView):
 
         # Serialize the items before sending back to front-end
         serializer = ItemSerializer(items, many=True)
-        return Response({'items': serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class PurchaseRequestList(generics.ListCreateAPIView):
