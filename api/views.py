@@ -233,11 +233,14 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ItemsDetail(APIView):
+    """
+    Retrieve Items in Purchase Request instance
+    """
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, field_name, value, *args, **kwargs):
-        # List of allowed fields to query by
+        # only the purchase_request is allowed to filter
         allowed_fields = ['purchase_request']  # example fields
 
         if field_name not in allowed_fields:
@@ -245,7 +248,6 @@ class ItemsDetail(APIView):
                 'error': 'Field not allowed for filtering'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Dynamic filtering
         filter_kwargs = {field_name: value}
         items = Item.objects.filter(**filter_kwargs)
 
@@ -254,7 +256,7 @@ class ItemsDetail(APIView):
                 'error': 'Error getting Items in Purchase Request'
             }, status=status.HTTP_404_NOT_FOUND)
 
-        # Serialize the items
+        # Serialize the items before sending back to front-end
         serializer = ItemSerializer(items, many=True)
         return Response({'items': serializer.data}, status=status.HTTP_200_OK)
 
