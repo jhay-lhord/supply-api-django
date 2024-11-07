@@ -7,6 +7,7 @@ urlpatterns = [
     path('user/<str:pk>', UserDetail.as_view()),
     path('item/', ItemList.as_view()),
     path('item/<str:pk>', ItemDetail.as_view()),
+    path('item/<str:field_name>/<str:value>/', ItemsDetail.as_view()),
     path('purchase-request/', PurchaseRequestList.as_view()),
     path('purchase-request/<str:pk>', PurchaseRequestDetail.as_view()),
     path('request-for-qoutation/', RequestForQoutationList.as_view()),
