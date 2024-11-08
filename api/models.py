@@ -184,7 +184,7 @@ class RequestForQoutation(models.Model):
     supplier_name = models.CharField(max_length=255)
     supplier_address = models.CharField(max_length=255)
     tin = models.CharField(max_length=50, null=True, blank=True)
-    isVAT = models.BooleanField(default=False)
+    is_VAT = models.BooleanField(default=False)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -196,6 +196,7 @@ class ItemQuotation(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     unit_price = models.CharField(max_length=255)
     brand_model = models.CharField(max_length=255)
+    is_low_price = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
