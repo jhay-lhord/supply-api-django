@@ -180,19 +180,24 @@ class Bidding(models.Model):
 
 
 class RequestForQoutation(models.Model):
-    rfq_no = models.CharField(max_length=255)
-    rfq_count = models.CharField(max_length=10)
+    rfq_no = models.CharField(max_length=50, primary_key=True)
     supplier_name = models.CharField(max_length=255)
     supplier_address = models.CharField(max_length=255)
     tin = models.CharField(max_length=50, null=True, blank=True)
+    isVAT = models.BooleanField(default=False)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Qoutation: {self.qoutation_no}'
+
+class ItemQuotation(models.Model):
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     unit_price = models.CharField(max_length=255)
     brand_model = models.CharField(max_length=255)
 
     def __str__(self):
-        return f'Qoutation: {self.qoutation_no}'
-
+        return f'Item Quotation: {self.rfq}'
 
 class AbstractOfQoutation(models.Model):
     afq_no = models.CharField(max_length=50)

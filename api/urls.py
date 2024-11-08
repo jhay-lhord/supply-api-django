@@ -12,6 +12,8 @@ urlpatterns = [
     path('purchase-request/<str:pk>', PurchaseRequestDetail.as_view()),
     path('request-for-qoutation/', RequestForQoutationList.as_view()),
     path('request-for-qoutation/<str:pk>', RequestForQoutationDetail.as_view()),
+    path('item-quotation/', ItemQuotationList.as_view()),
+    path('item-quotation/<str:pk>', ItemQuotationDetail.as_view()),
     path('purchase-order/', PurchaseOrderList.as_view()),
     path('purchase-order/<str:pk>', PurchaseOrderDetail.as_view()),
     path('inspection-report/', InspectionAcceptanceReportList.as_view()),

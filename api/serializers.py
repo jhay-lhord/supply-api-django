@@ -97,6 +97,11 @@ class RequestForQoutationSerializer(serializers.ModelSerializer):
         model = RequestForQoutation
         fields = '__all__'
 
+class ItemQuotationSerializer(serializers.ModelSerializer):
+
+    class Meta: 
+        model = ItemQuotation
+        fields = '__all__'
 
 class SupplierSerializer(serializers.ModelSerializer):
 

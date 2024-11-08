@@ -301,6 +301,26 @@ class RequestForQoutationList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class ItemQuotationDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a Item Qoutation instance
+    """
+    queryset = ItemQuotation.objects.all()
+    serializer_class = ItemQuotationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class ItemQuotationList(generics.ListCreateAPIView):
+    """
+    List all Item Quotaion or create a new Item Qoutation
+    """
+    queryset = ItemQuotation.objects.all()
+    serializer_class = ItemQuotationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class SupplierList(generics.ListCreateAPIView):
     """
     List all Supplier, or create a new Supplier
