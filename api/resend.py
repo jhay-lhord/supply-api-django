@@ -12,7 +12,7 @@ sender_domain_name = os.environ['DOMAIN_NAME']
 
 
 def send_mail_resend(reciever, subject, html):
-    params = {'from': f'email@{sender_domain_name}', 'to': [reciever], 'subject': subject, 'html': html}
+    params = {'from': f'supply-office@{sender_domain_name}', 'to': [reciever], 'subject': subject, 'html': html}
     email = resend.Emails.send(params)
     return email
 
