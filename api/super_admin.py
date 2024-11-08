@@ -1,3 +1,4 @@
+import pyotp
 from .models import CustomUser
 from dotenv import load_dotenv
 from django.contrib.auth import get_user_model
@@ -25,6 +26,7 @@ def create_super_admin_user():
           is_staff = True,
           is_superuser = True,
         )
+        admin_user.otp_secret = pyotp.random_base32()
 
         admin_user.set_password(password)
 
@@ -42,6 +44,9 @@ def create_super_admin_user():
                     .container {{
                         width: 100% !important;
                         padding: 10px !important;
+                        display: flex;
+                        justify-content: center;
+
                     }}
                     .header, .footer {{
                         padding: 15px !important;
