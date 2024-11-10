@@ -38,14 +38,20 @@ def create_super_admin_user():
         message = f"""     
         <html>
         <head>
-            <style>
-                /* Media query for mobile devices */
+            <style>                
+                body {{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center; 
+                min-height: 100vh; 
+                margin: 0; 
+                }}
                 @media only screen and (max-width: 600px) {{
                     .container {{
                         width: 100% !important;
                         padding: 10px !important;
-                        display: flex;
-                        justify-content: center;
+
 
                     }}
                     .header, .footer {{
@@ -66,8 +72,8 @@ def create_super_admin_user():
                 }}
             </style>
         </head>
-        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f5f5f5; padding: 20px; margin: 0;">
-            <div class="container" style="max-width: 600px; width: 100%; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f5f5f5; margin: 0;">
+            <div class="container" style=" width: 100%; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
                 
                 <!-- Header Section -->
                 <div class="header" style="background-color: #fdba74; padding: 20px; text-align: center;">
@@ -96,7 +102,7 @@ def create_super_admin_user():
                     
                     <p style="font-size: 14px; color: #777; margin-top: 30px;">
                         If you have any questions, reach out to our support team at 
-                        <a href="mailto:manilajaylord_24@gmail.com" style="color: #fdba74; text-decoration: none;">manilajaylord_24@gmail.com</a>.
+                        <a href="mailto:manilajaylord_24@gmail.com" style="color: #fdba74; text-decoration: none;">support email</a>.
                     </p>
                 </div>
 

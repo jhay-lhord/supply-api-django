@@ -10,6 +10,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth import authenticate
+from django.utils import timezone
 
 from .models import *
 from .resend import send_mail_resend
@@ -164,6 +166,42 @@ class OTPVerificationView(APIView):
                 return Response({'error': 'User Does not Exist'}, status=status.Http_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginTokenOfflineView(TokenObtainPairView):
+    """
+    Offine Login Verification View using email and password
+    """
+
+    serializer_class = LoginTokenObtainPairSerializer
+    authentication_classes = [] 
+    def post(self, request, *args, **kwargs):   
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        # Authenticate user with email and password
+        user = authenticate(request, email=email, password=password)
+        
+        if user:
+            refresh = RefreshToken.for_user(user)
+            user.last_login = timezone.now()
+            user.save()
+
+            # Add custom claims to the token (email and role)
+            role = user.groups.first()
+            refresh['role'] = role.name if role else None
+            refresh['email'] = user.email
+            refresh['fullname'] = f'{user.first_name} {user.last_name}'
+
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'message': 'Login Successful'
+            }, status=status.HTTP_200_OK)
+        
+        # If authentication fails, return an error
+        return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserList(generics.ListCreateAPIView):
     """
