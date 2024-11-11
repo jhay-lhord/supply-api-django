@@ -98,12 +98,16 @@ class RequestForQoutationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ItemQuotationSerializer(serializers.ModelSerializer):
-    item = ItemSerializer()
-
-    class Meta: 
+    item = serializers.PrimaryKeyRelatedField(queryset=Item.objects.all(), write_only=True)
+    item_details = ItemSerializer(source='item', read_only=True)
+    
+    class Meta:
         model = ItemQuotation
-        fields = '__all__'
-
+        fields = '__all__'  # Include all model fields
+        extra_kwargs = {
+            'item': {'write_only': True},     # Specify item as write-only
+            'item_details': {'read_only': True}  # Specify item_details as read-only
+        }
 class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
