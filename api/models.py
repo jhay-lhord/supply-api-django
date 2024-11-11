@@ -192,6 +192,7 @@ class RequestForQoutation(models.Model):
         return f'Qoutation: {self.qoutation_no}'
 
 class ItemQuotation(models.Model):
+    item_quotation_no = models.CharField(max_length=50, primary_key=True)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
