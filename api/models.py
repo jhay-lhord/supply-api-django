@@ -205,49 +205,59 @@ class ItemQuotation(models.Model):
         return f'Item Quotation: {self.rfq}'
 
 class AbstractOfQoutation(models.Model):
-    afq_no = models.CharField(max_length=50)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    afq_no = models.CharField(max_length=50, primary_key=True)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    total_amount = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
 
-
-class RecentActivity(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+class ItemSelectedForQuote(models.Model):
+    item_quote_no = models.CharField(max_length=50, primary_key=True)
+    afq = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    item_q = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
+    is_item_selected = models.BooleanField(default=False)
+    total_amount = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'User Activity: {self.purchase_request}, {self.purchase_order}'
+
+# class RecentActivity(models.Model):
+#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+#     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return f'User Activity: {self.purchase_request}, {self.purchase_order}'
 
 
 # Dashboard
-class InventoryManagement(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+# class InventoryManagement(models.Model):
+#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+#     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+#     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'User Inventory: {self.purchase_order}'
-
-
-class SupplyDashboardManagement(models.Model):
-    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.purchase_request}, {self.purchase_order}, {self.qoutation}'
+#     def __str__(self):
+#         return f'User Inventory: {self.purchase_order}'
 
 
-class BudgetDashboardManagement(models.Model):
-    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
+# class SupplyDashboardManagement(models.Model):
+#     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+#     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+#     qoutation = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f' Budget: {self.budget}'
+#     def __str__(self):
+#         return f'{self.purchase_request}, {self.purchase_order}, {self.qoutation}'
+
+
+# class BudgetDashboardManagement(models.Model):
+#     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return f' Budget: {self.budget}'
 
 
 # class BACDashboardManagement(models.Model):

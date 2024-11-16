@@ -359,6 +359,49 @@ class ItemQuotationList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class AbstractOfQoutationList(generics.ListCreateAPIView):
+    """
+    List all Abstract for Quotation or create new Abstract for Quotation
+    """
+    queryset = AbstractOfQoutation.objects.all()
+    serializer_class = AbstractOfQoutationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class AbstractOfQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete Abstract of Quotation instance
+    """
+    queryset = AbstractOfQoutation.objects.all()
+    serializer_class = AbstractOfQoutationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class ItemSelectedForQuoteList(generics.ListCreateAPIView):
+    """
+    List all Selected Item Ready for Abstract, or add new Selected Item
+    """
+
+    queryset = ItemSelectedForQuote.objects.all()
+    serializer_class = ItemSelectedForQuoteSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class ItemSelectedForQuoteDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete Selected Item instance
+    """
+
+    queryset = ItemSelectedForQuote.objects.all()
+    serializer_class = ItemSelectedForQuoteSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+
 class SupplierList(generics.ListCreateAPIView):
     """
     List all Supplier, or create a new Supplier

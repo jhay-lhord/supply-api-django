@@ -97,6 +97,23 @@ class RequestForQoutationSerializer(serializers.ModelSerializer):
         model = RequestForQoutation
         fields = '__all__'
 
+class AbstractOfQoutationSerializer(serializers.ModelSerializer):
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
+    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
+    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
+
+    class Meta:
+        model = AbstractOfQoutation
+        fields = '__all__'
+        extra_kwargs = {
+            'purchase_request': {'write_only': True},
+            'pr_details': {'read_only': True},
+            'rfq': {'write_only': True},
+            'rfq_details': {'read_only': True}
+        }
+
 class ItemQuotationSerializer(serializers.ModelSerializer):
     item = serializers.PrimaryKeyRelatedField(queryset=Item.objects.all(), write_only=True)
     item_details = ItemSerializer(source='item', read_only=True)
@@ -108,6 +125,32 @@ class ItemQuotationSerializer(serializers.ModelSerializer):
             'item': {'write_only': True},     # Specify item as write-only
             'item_details': {'read_only': True}  # Specify item_details as read-only
         }
+
+
+class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
+    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
+    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
+
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
+    item_q = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
+    item_details = ItemQuotationSerializer(source='item_q', read_only=True)
+
+    class Meta:
+        model = ItemSelectedForQuote
+        fields = '__all__'
+
+        extra_kwargs = {
+            'rfq': {'write_only': True},
+            'rfq_details': {'read_only': True},
+            'purchase_request': {'write_only': True},
+            'pr_details': {'read_only': True},
+            'item_q': {'write_only': True},
+            'item_details': {'read_only': True},
+        }
+
+
 class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
