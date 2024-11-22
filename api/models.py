@@ -224,6 +224,15 @@ class ItemSelectedForQuote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class Requesitioner(models.Model):
+    requisition_id = models.CharField(primary_key=True)
+    name = models.CharField(max_length=255)
+    gender = models.CharField(max_length=50)
+    department = models.CharField(max_length=100)
+    designation = models.CharField(max_length=150)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 # class RecentActivity(models.Model):
 #     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 #     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)

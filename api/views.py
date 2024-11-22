@@ -213,6 +213,26 @@ class UserList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class RequisitionerList(generics.ListCreateAPIView):
+    """
+    List all Requisitioner or Create new Requisitioner
+    """
+    queryset = Requesitioner.objects.all()
+    serializer_class = RequesitionerSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class RequisitionerDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a Requisitioner
+    """
+    queryset = Requesitioner.objects.all()
+    serializer_class = RequesitionerSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or Delete a User

@@ -150,6 +150,11 @@ class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
             'item_details': {'read_only': True},
         }
 
+class RequesitionerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Requesitioner
+        fields = '__all__'
 
 class SupplierSerializer(serializers.ModelSerializer):
 
