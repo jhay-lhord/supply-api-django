@@ -233,6 +233,26 @@ class RequisitionerDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class CampusDirectorList(generics.ListCreateAPIView):
+    """
+    List all CampusDirector or Create new RequisiCampusDirectortioner
+    """
+    queryset = CampusDirector.objects.all()
+    serializer_class = CampusDirectorSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class CampusDirectorDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a CampusDirector
+    """
+    queryset = CampusDirector.objects.all()
+    serializer_class = CampusDirectorSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or Delete a User

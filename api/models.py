@@ -232,6 +232,12 @@ class Requesitioner(models.Model):
     designation = models.CharField(max_length=150)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class CampusDirector(models.Model):
+    cd_id = models.CharField(primary_key=True)
+    name = models.CharField(max_length=150)
+    designation = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
 # class RecentActivity(models.Model):
 #     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

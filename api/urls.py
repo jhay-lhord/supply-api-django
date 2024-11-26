@@ -7,6 +7,8 @@ urlpatterns = [
     path('requisitioner/<str:pk>', RequisitionerDetail.as_view()),
     path('users/', UserList.as_view()),
     path('user/<str:pk>', UserDetail.as_view()),
+    path('campus-director/', CampusDirectorList.as_view()),
+    path('campus-director/<str:pk>', CampusDirectorDetail.as_view()),
     path('item/', ItemList.as_view()),
     path('item/<str:pk>', ItemDetail.as_view()),
     path('item/<str:field_name>/<str:value>/', ItemsDetail.as_view()),

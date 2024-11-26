@@ -156,6 +156,13 @@ class RequesitionerSerializer(serializers.ModelSerializer):
         model = Requesitioner
         fields = '__all__'
 
+
+class CampusDirectorSerializer(serializers.ModelSerializer):
+    
+    class Meta: 
+        model = CampusDirector
+        fields = '__all__'
+
 class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
