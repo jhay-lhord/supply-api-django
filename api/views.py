@@ -486,7 +486,7 @@ class PurchaseOrderList(generics.ListCreateAPIView):
     """
     List all Purchase Order, or create a new Purchase Order
     """
-    queryset = PurchaseOrder.objects.select_related('item').all()
+    queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
     authentication_classes = []
     permission_classes = []
@@ -496,7 +496,7 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or Delete a Purchase Order instance
     """
-    queryset = PurchaseOrder.objects.select_related('item').all()
+    queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
