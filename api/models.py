@@ -239,6 +239,13 @@ class CampusDirector(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class BACMember(models.Model):
+    member_id = models.CharField(primary_key=True)
+    name = models.CharField(max_length=200)
+    designation = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 # class RecentActivity(models.Model):
 #     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 #     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)

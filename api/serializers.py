@@ -163,6 +163,14 @@ class CampusDirectorSerializer(serializers.ModelSerializer):
         model = CampusDirector
         fields = '__all__'
 
+
+class BACMemberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BACMember
+        fields = '__all__' 
+
+
 class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:

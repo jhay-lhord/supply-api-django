@@ -235,7 +235,7 @@ class RequisitionerDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CampusDirectorList(generics.ListCreateAPIView):
     """
-    List all CampusDirector or Create new RequisiCampusDirectortioner
+    List all CampusDirector or Create new CampusDirector
     """
     queryset = CampusDirector.objects.all()
     serializer_class = CampusDirectorSerializer
@@ -249,6 +249,26 @@ class CampusDirectorDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = CampusDirector.objects.all()
     serializer_class = CampusDirectorSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class BACMemberList(generics.ListCreateAPIView):
+    """
+    List all BACMember or Create new BACMember
+    """
+    queryset = BACMember.objects.all()
+    serializer_class = BACMemberSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class BACMemberDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a BACMember
+    """
+    queryset = BACMember.objects.all()
+    serializer_class = BACMemberSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
