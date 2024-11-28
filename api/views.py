@@ -482,6 +482,26 @@ class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class BACMemberDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a BACMember instance
+    """
+    queryset = BACMember.objects.all()
+    serializer_class = BACMemberSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class BACMemberList(generics.ListCreateAPIView):
+    """
+    List all BACMember or create a new BACMember
+    """
+    queryset = BACMember.objects.all()
+    serializer_class = BACMemberSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class PurchaseOrderList(generics.ListCreateAPIView):
     """
     List all Purchase Order, or create a new Purchase Order
