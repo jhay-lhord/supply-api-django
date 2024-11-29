@@ -12,6 +12,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.utils import timezone
+from django.db.models.functions import ExtractWeekDay
+from django.db.models import Count
 
 from .models import *
 from .resend import send_mail_resend
@@ -521,6 +523,45 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+class DailyReportView(APIView):
+    """
+    Daily Reportc View
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, *args, **kwargs):   
+        # Approved Data
+        approved = (
+            PurchaseRequest.objects.filter(status="Forwarded to Procurement")  # Filter by status
+            .annotate(day_of_week=ExtractWeekDay("created_at"))  # Annotate with day of week
+            .values("day_of_week")  # Group by day of week
+            .annotate(total_approved=Count("pr_no"))  # Aggregate the count field
+        )
+        # Quotation Data
+        quotation = (
+            RequestForQoutation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
+            .values("day_of_week")
+            .annotate(total_quotation=Count("rfq_no"))
+        )
+        # Abstract Data
+        abstract = (
+            AbstractOfQoutation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
+            .values("day_of_week")
+            .annotate(total_abstract=Count("afq_no"))
+        )
+        # Initialize Combined Data with All Days of the Week
+        day_mapping = {1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"}
+        combined_data = {day: {"day": day, "total_approved": 0, "total_quotation": 0, "total_abstract": 0} for day in day_mapping.values()}
+        # Process and Combine Data
+        for data, key in zip([approved, quotation, abstract], ["total_approved", "total_quotation", "total_abstract"]):
+            for entry in data:
+                day_name = day_mapping[entry["day_of_week"]]
+                combined_data[day_name][key] = entry[key]
+        # Convert Combined Data to List
+        response_data = list(combined_data.values())
+        return Response(response_data, status=status.HTTP_200_OK)
+    
 
 class InspectionAcceptanceReportList(generics.ListCreateAPIView):
     """
