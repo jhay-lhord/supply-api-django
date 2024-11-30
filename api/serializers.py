@@ -72,6 +72,15 @@ class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+    
+class RecentActivitySerializer(serializers.ModelSerializer):
+    content_type = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = RecentActivity
+        fields = ['id', 'user', 'activity_type', 'timestamp', 'content_type', 'object_id']
+
 
 class OTPVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -108,6 +117,65 @@ class ItemQuotationSerializer(serializers.ModelSerializer):
             'item': {'write_only': True},     # Specify item as write-only
             'item_details': {'read_only': True}  # Specify item_details as read-only
         }
+
+
+
+class AbstractOfQoutationV2Serializer(serializers.ModelSerializer):
+    item_quotation = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
+    item_quotation_details = ItemQuotationSerializer(source='item_quotation', read_only=True)
+    class Meta:
+        model = AbstractOfQuotationV2
+        fields = '__all__'
+        extra_kwargs = {
+            'item_quotation': {'write_only': True},
+            'item_quotation_details': {'read_only': True},
+        }
+
+
+class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
+    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
+    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
+
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
+    item_q = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
+    item_details = ItemQuotationSerializer(source='item_q', read_only=True)
+
+    class Meta:
+        model = ItemSelectedForQuote
+        fields = '__all__'
+
+        extra_kwargs = {
+            'rfq': {'write_only': True},
+            'rfq_details': {'read_only': True},
+            'purchase_request': {'write_only': True},
+            'pr_details': {'read_only': True},
+            'item_q': {'write_only': True},
+            'item_details': {'read_only': True},
+        }
+
+class RequesitionerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Requesitioner
+        fields = '__all__'
+
+
+class CampusDirectorSerializer(serializers.ModelSerializer):
+    
+    class Meta: 
+        model = CampusDirector
+        fields = '__all__'
+
+
+class BACMemberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BACMember
+        fields = '__all__' 
+
+
 class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:

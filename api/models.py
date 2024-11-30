@@ -3,6 +3,9 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class CustomUserManager(BaseUserManager):
@@ -46,7 +49,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
-        return f'{str(self.id)} - {self.email}'
+        return f'{self.first_name} {self.last_name}'
 
     def generate_otp(self):
         """Generates OTP and sets expiration time."""
@@ -65,6 +68,28 @@ class CustomUser(AbstractUser):
             self.save()
             return True
         return False
+
+    
+class RecentActivity(models.Model):
+    ACTIVITY_TYPES = (
+        ('CREATE', 'Created'),
+        ('UPDATE', 'Updated'),
+        ('DELETE', 'Deleted'),
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=10, choices=ACTIVITY_TYPES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=100)
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.user} {self.get_activity_type_display()} {self.content_type}"
+
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
@@ -91,6 +116,74 @@ class Item(models.Model):
 
     def __str__(self):
         return self.item_description
+
+
+class RequestForQoutation(models.Model):
+    rfq_no = models.CharField(max_length=50, primary_key=True)
+    supplier_name = models.CharField(max_length=255)
+    supplier_address = models.CharField(max_length=255)
+    tin = models.CharField(max_length=50, null=True, blank=True)
+    is_VAT = models.BooleanField(default=False)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Qoutation: {self.qoutation_no}'
+
+class ItemQuotation(models.Model):
+    item_quotation_no = models.CharField(max_length=50, primary_key=True)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    unit_price = models.CharField(max_length=255)
+    brand_model = models.CharField(max_length=255)
+    is_low_price = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Item Quotation: {self.rfq}'
+
+class AbstractOfQoutation(models.Model):
+    afq_no = models.CharField(max_length=50, primary_key=True)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
+
+
+class AbstractOfQuotationV2(models.Model):
+    aoq_no = models.CharField(primary_key = True)
+    item_quotation = models.ForeignKey(ItemQuotation, on_delete = models.CASCADE)
+    is_item_selected = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
+
+
+class ItemSelectedForQuote(models.Model):
+    item_quote_no = models.CharField(max_length=50, primary_key=True)
+    afq = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    item_q = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
+    is_item_selected = models.BooleanField(default=False)
+    total_amount = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PurchaseOrder(models.Model):
+    po_no = models.CharField(primary_key=True)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    total_amount = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.po_no}'
+
 
 
 class Supplier(models.Model):

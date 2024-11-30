@@ -14,10 +14,18 @@ urlpatterns = [
     path('request-for-qoutation/<str:pk>', RequestForQoutationDetail.as_view()),
     path('item-quotation/', ItemQuotationList.as_view()),
     path('item-quotation/<str:pk>', ItemQuotationDetail.as_view()),
+    path('abstract-of-quotation/', AbstractOfQoutationV2List.as_view()),
+    path('abstract-of-quotation/<str:pk>', AbstractOfQoutationV2Detail.as_view()),
+    path('item-selected-quote/', ItemSelectedForQuoteList.as_view()),
+    path('item-selected-quote/<str:pk>', ItemSelectedForQuoteDetail.as_view()),
     path('purchase-order/', PurchaseOrderList.as_view()),
     path('purchase-order/<str:pk>', PurchaseOrderDetail.as_view()),
     path('inspection-report/', InspectionAcceptanceReportList.as_view()),
     path('inspection-report/<str:pk>', InspectionAcceptanceReportDetail.as_view()),
     path('requisition-slip/', RequisitionIssueSlipList.as_view()),
     path('requisition-slip/<str:pk>', RequisitionIssueSlipDetail.as_view()),
+
+    path('daily-report/', DailyReportView.as_view()),
+    path('recent-activities/', RecentActivityList.as_view(), name='recent-activities'),
+
 ]
