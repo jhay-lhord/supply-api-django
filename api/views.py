@@ -205,6 +205,14 @@ class LoginTokenOfflineView(TokenObtainPairView):
         return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class RecentActivityList(generics.ListAPIView):
+    queryset = RecentActivity.objects.all()
+    serializer_class = RecentActivitySerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = None 
+
+
 class UserList(generics.ListCreateAPIView):
     """
     List all Users or Create new User
@@ -437,6 +445,27 @@ class AbstractOfQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = AbstractOfQoutation.objects.all()
     serializer_class = AbstractOfQoutationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+
+class AbstractOfQoutationV2List(generics.ListCreateAPIView):
+    """
+    List all Abstract for Quotation or create new Abstract for Quotation
+    """
+    queryset = AbstractOfQuotationV2.objects.all()
+    serializer_class = AbstractOfQoutationV2Serializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class AbstractOfQoutationV2Detail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete Abstract of Quotation instance
+    """
+    queryset = AbstractOfQuotationV2.objects.all()
+    serializer_class = AbstractOfQoutationV2Serializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 

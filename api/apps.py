@@ -7,6 +7,7 @@ class ApiConfig(AppConfig):
     name = 'api'
 
     def ready(self):
+        import api.signals
         post_migrate.connect(run_create_groups, sender=self)
         post_migrate.connect(run_create_super_admin_user, sender=self)
 

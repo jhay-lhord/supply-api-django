@@ -72,6 +72,15 @@ class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+    
+class RecentActivitySerializer(serializers.ModelSerializer):
+    content_type = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = RecentActivity
+        fields = ['id', 'user', 'activity_type', 'timestamp', 'content_type', 'object_id']
+
 
 class OTPVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -124,6 +133,19 @@ class ItemQuotationSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'item': {'write_only': True},     # Specify item as write-only
             'item_details': {'read_only': True}  # Specify item_details as read-only
+        }
+
+
+
+class AbstractOfQoutationV2Serializer(serializers.ModelSerializer):
+    item_quotation = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
+    item_quotation_details = ItemQuotationSerializer(source='item_quotation', read_only=True)
+    class Meta:
+        model = AbstractOfQuotationV2
+        fields = '__all__'
+        extra_kwargs = {
+            'item_quotation': {'write_only': True},
+            'item_quotation_details': {'read_only': True},
         }
 
 

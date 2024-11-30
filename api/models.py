@@ -3,6 +3,9 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class CustomUserManager(BaseUserManager):
@@ -46,7 +49,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
-        return f'{str(self.id)} - {self.email}'
+        return f'{self.first_name} {self.last_name}'
 
     def generate_otp(self):
         """Generates OTP and sets expiration time."""
@@ -65,6 +68,28 @@ class CustomUser(AbstractUser):
             self.save()
             return True
         return False
+
+    
+class RecentActivity(models.Model):
+    ACTIVITY_TYPES = (
+        ('CREATE', 'Created'),
+        ('UPDATE', 'Updated'),
+        ('DELETE', 'Deleted'),
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=10, choices=ACTIVITY_TYPES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=100)
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.user} {self.get_activity_type_display()} {self.content_type}"
+
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
@@ -126,6 +151,17 @@ class AbstractOfQoutation(models.Model):
 
     def __str__(self):
         return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
+
+
+class AbstractOfQuotationV2(models.Model):
+    aoq_no = models.CharField(primary_key = True)
+    item_quotation = models.ForeignKey(ItemQuotation, on_delete = models.CASCADE)
+    is_item_selected = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
+
 
 class ItemSelectedForQuote(models.Model):
     item_quote_no = models.CharField(max_length=50, primary_key=True)
