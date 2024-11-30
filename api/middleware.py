@@ -11,6 +11,13 @@ logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
+def get_user_role(user):
+    """Get the role of the user from their group."""
+    if user.is_authenticated:
+        roles = user.groups.values_list('name', flat=True)  # Get all group names as a list
+        return roles
+    return []
+
 def get_user_from_token(request):
     auth_header = request.headers.get("Authorization")
     if auth_header:
@@ -46,6 +53,7 @@ class AuthenticatedUserMiddleware:
         user = get_user_from_token(request)
         set_current_user(user)
         request.user = SimpleLazyObject(lambda: user)
+        roles = get_user_role(user)
         response = self.get_response(request)
         logger.debug(f'Processed response in AuthenticatedUserMiddleware. {response}')
         return response

@@ -79,7 +79,7 @@ class RecentActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecentActivity
-        fields = ['id', 'user', 'activity_type', 'timestamp', 'content_type', 'object_id']
+        fields = ['id', 'user', 'user_role', 'activity_type', 'timestamp', 'content_type', 'object_id']
 
 
 class OTPVerificationSerializer(serializers.Serializer):
