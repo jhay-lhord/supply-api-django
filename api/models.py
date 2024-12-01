@@ -155,9 +155,10 @@ class AbstractOfQoutation(models.Model):
 
 
 class AbstractOfQuotationV2(models.Model):
-    aoq_no = models.CharField(primary_key = True)
+    aoq_no = models.CharField(primary_key=True)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     item_quotation = models.ForeignKey(ItemQuotation, on_delete = models.CASCADE)
-    is_item_selected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -165,11 +166,11 @@ class AbstractOfQuotationV2(models.Model):
 
 
 class ItemSelectedForQuote(models.Model):
-    item_quote_no = models.CharField(max_length=50, primary_key=True)
-    afq = models.ForeignKey(AbstractOfQoutation, on_delete=models.CASCADE)
+    item_selected_no = models.CharField(max_length=50, primary_key=True)
+    aoq = models.ForeignKey(AbstractOfQuotationV2, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
-    item_q = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
+    item_qoutation = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
     is_item_selected = models.BooleanField(default=False)
     total_amount = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)

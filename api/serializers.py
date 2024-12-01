@@ -138,12 +138,20 @@ class ItemQuotationSerializer(serializers.ModelSerializer):
 
 
 class AbstractOfQoutationV2Serializer(serializers.ModelSerializer):
+    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
+    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
     item_quotation = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
     item_quotation_details = ItemQuotationSerializer(source='item_quotation', read_only=True)
     class Meta:
         model = AbstractOfQuotationV2
         fields = '__all__'
         extra_kwargs = {
+            'rfq': {'write_only': True},
+            'rfq_details': {'read_only': True},
+            'purchase_request': {'write_only': True},
+            'pr_details': {'read_only': True},
             'item_quotation': {'write_only': True},
             'item_quotation_details': {'read_only': True},
         }
@@ -156,8 +164,8 @@ class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
     purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
     pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
 
-    item_q = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
-    item_details = ItemQuotationSerializer(source='item_q', read_only=True)
+    item_qoutation = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
+    item_qoutation_details = ItemQuotationSerializer(source='item_qoutation', read_only=True)
 
     class Meta:
         model = ItemSelectedForQuote
@@ -168,8 +176,8 @@ class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
             'rfq_details': {'read_only': True},
             'purchase_request': {'write_only': True},
             'pr_details': {'read_only': True},
-            'item_q': {'write_only': True},
-            'item_details': {'read_only': True},
+            'item_qoutation': {'write_only': True},
+            'item_qoutation_details': {'read_only': True},
         }
 
 class RequesitionerSerializer(serializers.ModelSerializer):
