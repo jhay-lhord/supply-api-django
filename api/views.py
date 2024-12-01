@@ -375,8 +375,8 @@ class PurchaseRequestList(generics.ListCreateAPIView):
     """
     queryset = PurchaseRequest.objects.all()
     serializer_class = PurchaseRequestSerializer
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
