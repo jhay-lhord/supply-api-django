@@ -47,8 +47,8 @@ def delete_activity(sender, instance, **kwargs):
     else:
         logger.warning(f"No user found for {sender.__name__} DELETE action")
 
-# List of model names you want to track
-models_to_track = ['PurchaseRequest', 'Item', 'RequestForQoutation', 'AbstractOfQoutation']
+# List of model names to include in the recent activity
+models_to_track = ['PurchaseRequest', 'Item', 'RequestForQoutation', 'AbstractOfQuotation']
 
 for model_name in models_to_track:
     model = apps.get_model('api', model_name)

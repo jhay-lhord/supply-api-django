@@ -144,17 +144,8 @@ class ItemQuotation(models.Model):
     def __str__(self):
         return f'Item Quotation: {self.rfq}'
 
-class AbstractOfQoutation(models.Model):
-    afq_no = models.CharField(max_length=50, primary_key=True)
-    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
-    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
-
-
-class AbstractOfQuotationV2(models.Model):
+class AbstractOfQuotation(models.Model):
     aoq_no = models.CharField(primary_key=True)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
@@ -167,7 +158,7 @@ class AbstractOfQuotationV2(models.Model):
 
 class ItemSelectedForQuote(models.Model):
     item_selected_no = models.CharField(max_length=50, primary_key=True)
-    aoq = models.ForeignKey(AbstractOfQuotationV2, on_delete=models.CASCADE)
+    aoq = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     item_qoutation = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)

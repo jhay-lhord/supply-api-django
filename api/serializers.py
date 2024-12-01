@@ -106,22 +106,6 @@ class RequestForQoutationSerializer(serializers.ModelSerializer):
         model = RequestForQoutation
         fields = '__all__'
 
-class AbstractOfQoutationSerializer(serializers.ModelSerializer):
-    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
-    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
-
-    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
-    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
-
-    class Meta:
-        model = AbstractOfQoutation
-        fields = '__all__'
-        extra_kwargs = {
-            'purchase_request': {'write_only': True},
-            'pr_details': {'read_only': True},
-            'rfq': {'write_only': True},
-            'rfq_details': {'read_only': True}
-        }
 
 class ItemQuotationSerializer(serializers.ModelSerializer):
     item = serializers.PrimaryKeyRelatedField(queryset=Item.objects.all(), write_only=True)
@@ -137,15 +121,17 @@ class ItemQuotationSerializer(serializers.ModelSerializer):
 
 
 
-class AbstractOfQoutationV2Serializer(serializers.ModelSerializer):
+class AbstractOfQoutationSerializer(serializers.ModelSerializer):
     rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
     rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
+
     purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
     pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
     item_quotation = serializers.PrimaryKeyRelatedField(queryset=ItemQuotation.objects.all(), write_only=True)
     item_quotation_details = ItemQuotationSerializer(source='item_quotation', read_only=True)
     class Meta:
-        model = AbstractOfQuotationV2
+        model = AbstractOfQuotation
         fields = '__all__'
         extra_kwargs = {
             'rfq': {'write_only': True},

@@ -433,7 +433,7 @@ class AbstractOfQoutationList(generics.ListCreateAPIView):
     """
     List all Abstract for Quotation or create new Abstract for Quotation
     """
-    queryset = AbstractOfQoutation.objects.all()
+    queryset = AbstractOfQuotation.objects.all()
     serializer_class = AbstractOfQoutationSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -443,29 +443,8 @@ class AbstractOfQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or Delete Abstract of Quotation instance
     """
-    queryset = AbstractOfQoutation.objects.all()
+    queryset = AbstractOfQuotation.objects.all()
     serializer_class = AbstractOfQoutationSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-
-class AbstractOfQoutationV2List(generics.ListCreateAPIView):
-    """
-    List all Abstract for Quotation or create new Abstract for Quotation
-    """
-    queryset = AbstractOfQuotationV2.objects.all()
-    serializer_class = AbstractOfQoutationV2Serializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-class AbstractOfQoutationV2Detail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, Update or Delete Abstract of Quotation instance
-    """
-    queryset = AbstractOfQuotationV2.objects.all()
-    serializer_class = AbstractOfQoutationV2Serializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
