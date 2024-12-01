@@ -29,7 +29,7 @@ def create_update_activity(sender, instance, created, **kwargs):
 
 def delete_activity(sender, instance, **kwargs):
     user = get_current_user()
-    user_role = get_user_role()
+    user_role = get_user_role(user)
 
     logger.info(f"delete_activity signal triggered for {sender.__name__}. User: {user}")
 
