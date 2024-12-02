@@ -533,7 +533,7 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class DailyReportView(APIView):
     """
-    Daily Reportc View
+    Daily Reports View
     """
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -554,7 +554,7 @@ class DailyReportView(APIView):
         )
         # Abstract Data
         abstract = (
-            AbstractOfQoutation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
+            AbstractOfQuotation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
             .values("day_of_week")
             .annotate(total_abstract=Count("afq_no"))
         )
