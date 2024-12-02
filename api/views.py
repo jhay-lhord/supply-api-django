@@ -556,7 +556,7 @@ class DailyReportView(APIView):
         abstract = (
             AbstractOfQuotation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
             .values("day_of_week")
-            .annotate(total_abstract=Count("afq_no"))
+            .annotate(total_abstract=Count("aoq_no"))
         )
         # Initialize Combined Data with All Days of the Week
         day_mapping = {1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"}
