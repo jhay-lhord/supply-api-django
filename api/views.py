@@ -531,7 +531,7 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-class DailyReportView(APIView):
+class BACDailyReportView(APIView):
     """
     Daily Reports View
     """

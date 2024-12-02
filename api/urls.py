@@ -31,7 +31,7 @@ urlpatterns = [
     path('requisition-slip/', RequisitionIssueSlipList.as_view()),
     path('requisition-slip/<str:pk>', RequisitionIssueSlipDetail.as_view()),
 
-    path('daily-report/', DailyReportView.as_view()),
+    path('daily-report/', BACDailyReportView.as_view()),
     path('recent-activities/', RecentActivityList.as_view(), name='recent-activities'),
 
 ]
