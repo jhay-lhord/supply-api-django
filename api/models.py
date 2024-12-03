@@ -32,6 +32,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+    employee_id = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=254, unique=True)
     is_active = models.BooleanField(default=False)
     otp_code = models.CharField(max_length=10, null=True, blank=True)
@@ -169,6 +170,7 @@ class ItemSelectedForQuote(models.Model):
 
 class PurchaseOrder(models.Model):
     po_no = models.CharField(primary_key=True)
+    status = models.CharField(default="In Progress")
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)

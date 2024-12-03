@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
-    print('serializer started')
+    employee_id = serializers.CharField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     role = serializers.CharField(write_only=True)
@@ -20,7 +20,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name', 'role', 'email', 'password', 'password2')
+        fields = ('employee_id', 'first_name', 'last_name', 'role', 'email', 'password', 'password2')
         extra_kwargs = {'password': {'write_only': True}, 'password2': {'write_only': True}}
 
     def validate(self, attrs):
@@ -30,13 +30,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        employee_id = validated_data.pop('employee_id')
         first_name = validated_data.pop('first_name')
         last_name = validated_data.pop('last_name')
         role = validated_data.pop('role')
         email = validated_data.pop('email')
         password = validated_data.pop('password')
 
-        user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
+        user = User.objects.create( employee_id=employee_id, first_name=first_name, last_name=last_name, email=email, password=password)
         user.is_active = False
 
         # generate secret after registration
