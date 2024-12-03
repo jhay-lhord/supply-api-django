@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
-    employee_id = models.CharField(max_length=100, unique=True)
+    employee_id = models.CharField(primary_key=True)
     email = models.EmailField(max_length=254, unique=True)
     is_active = models.BooleanField(default=False)
     otp_code = models.CharField(max_length=10, null=True, blank=True)
