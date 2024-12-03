@@ -170,12 +170,20 @@ class ItemSelectedForQuote(models.Model):
 class PurchaseOrder(models.Model):
     po_no = models.CharField(primary_key=True)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    request_for_qoutation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
-    total_amount = models.CharField(max_length=10)
+    request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.po_no}'
+
+
+class PurchaseOrderItem(models.Model):
+    po_item_no = models.CharField(primary_key=True)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    aoq_item = models.ForeignKey(ItemSelectedForQuote, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 

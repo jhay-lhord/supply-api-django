@@ -518,8 +518,8 @@ class PurchaseOrderList(generics.ListCreateAPIView):
     """
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -530,6 +530,28 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PurchaseOrderSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+PurchaseOrderItem
+class PurchaseOrderItemList(generics.ListCreateAPIView):
+    """
+    List all Purchase Order Item, or create a new Purchase Order Item
+    """
+    queryset = PurchaseOrderItem.objects.all()
+    serializer_class = PurchaseOrderItemSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class PurchaseOrderItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a Purchase Order Item instance
+    """
+    queryset = PurchaseOrderItem.objects.all()
+    serializer_class = PurchaseOrderItemSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
 class BACDailyReportView(APIView):
     """

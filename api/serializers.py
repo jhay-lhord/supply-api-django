@@ -195,10 +195,51 @@ class SupplierSerializer(serializers.ModelSerializer):
 
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
+    request_for_quotation = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
+    rfq_details = RequestForQoutationSerializer(source='request_for_quotation', read_only=True)
+
+    abstract_of_quotation = serializers.PrimaryKeyRelatedField(queryset=AbstractOfQuotation.objects.all(), write_only=True)
+    aoq_details = AbstractOfQoutationSerializer(source='abstract_of_quotation', read_only=True)
 
     class Meta:
-        model = PurchaseOrder
+        model=PurchaseOrder
         fields = '__all__'
+
+        extra_kwargs = {
+            'purchase_request': {'write_only': True},
+            'pr_details': {'read_only': True},
+            'request_for_qoutation': {'write_only': True},
+            'rfq_details': {'read_only': True},
+            'abstract_of_quotation': {'write_only': True},
+            'aoq_details': {'read_only': True},
+            
+        }
+        
+class PurchaseOrderItemSerializer(serializers.ModelSerializer):
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
+    purchase_order = serializers.PrimaryKeyRelatedField(queryset=PurchaseOrder.objects.all(), write_only=True)
+    pr_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
+    
+    aoq_item = serializers.PrimaryKeyRelatedField(queryset=ItemSelectedForQuote.objects.all(), write_only=True)
+    aoq_item_details = ItemSelectedForQuoteSerializer(source='aoq_item', read_only=True)
+
+    class Meta:
+        model = PurchaseOrderItem
+        fields = '__all__'
+
+        extra_kwargs = {
+            'purchase_request': {'write_only':True},
+            'pr_details': {'read_only':True},
+            'purchase_order': {'write_only':True},
+            'po_details': {'read_only':True},
+            'aoq_item': {'write_only': True},
+            'aoq_item_details': {'read_only': True},
+        }
 
 
 class InspectionAcceptanceReportSerializer(serializers.ModelSerializer):

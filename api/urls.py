@@ -26,6 +26,8 @@ urlpatterns = [
     path('item-selected-quote/<str:pk>', ItemSelectedForQuoteDetail.as_view()),
     path('purchase-order/', PurchaseOrderList.as_view()),
     path('purchase-order/<str:pk>', PurchaseOrderDetail.as_view()),
+    path('purchase-order-item/', PurchaseOrderItemList.as_view()),
+    path('purchase-order-item/<str:pk>', PurchaseOrderItemDetail.as_view()),
     path('inspection-report/', InspectionAcceptanceReportList.as_view()),
     path('inspection-report/<str:pk>', InspectionAcceptanceReportDetail.as_view()),
     path('requisition-slip/', RequisitionIssueSlipList.as_view()),
