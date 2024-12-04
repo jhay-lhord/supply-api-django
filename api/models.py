@@ -171,7 +171,8 @@ class ItemSelectedForQuote(models.Model):
 
 class PurchaseOrder(models.Model):
     po_no = models.CharField(primary_key=True)
-    status = models.CharField(default="In Progress")
+    status = models.CharField(max_length=150, default="In Progress")
+    total_amount = models.CharField(max_length=100)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
