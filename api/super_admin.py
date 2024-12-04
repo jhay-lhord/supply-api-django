@@ -9,6 +9,8 @@ from .groups import assign_role_and_save
 
 load_dotenv()
 User = get_user_model()
+ENVIRONMENT = os.getenv('DJANGO_ENV', 'development')
+
 
 def create_super_admin_user():
     first_name = os.getenv("ADMIN_FIRST_NAME")
@@ -119,8 +121,11 @@ def create_super_admin_user():
         </body>
         </html>
         """
-
-        send_mail_resend(email, subject, message)
+        if(ENVIRONMENT == "production"):
+            send_mail_resend(email, subject, message)
+        else:
+            print(f'Email : {email}')
+            print(f'Password : {password}')
 
         print("Admin user created successfully!")
     else:
