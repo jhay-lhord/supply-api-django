@@ -531,8 +531,21 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+class PurchaseOrderStatusUpdateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-PurchaseOrderItem
+    def patch(self, request, pk):
+        try:
+            order = PurchaseOrder.objects.get(pk=pk)
+            serializer = PurchaseOrderSerializer(order, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PurchaseOrder.DoesNotExist:
+            return Response({"error": "Purchase Order not found"}, status=status.HTTP_404_NOT_FOUND)
+
 class PurchaseOrderItemList(generics.ListCreateAPIView):
     """
     List all Purchase Order Item, or create a new Purchase Order Item
