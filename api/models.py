@@ -151,6 +151,7 @@ class AbstractOfQuotation(models.Model):
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     item_quotation = models.ForeignKey(ItemQuotation, on_delete = models.CASCADE)
+    total_amount = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
