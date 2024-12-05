@@ -178,7 +178,7 @@ class PurchaseOrder(models.Model):
     request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(default=timezone.now(), null=True)
 
     def __str__(self):
         return f'{self.po_no}'
