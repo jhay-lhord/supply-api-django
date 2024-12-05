@@ -47,7 +47,8 @@ urlpatterns = [
     path('requisition-slip/', RequisitionIssueSlipList.as_view()),
     path('requisition-slip/<str:pk>', RequisitionIssueSlipDetail.as_view()),
 
-    path('daily-report/', BACDailyReportView.as_view()),
+    path('daily-report/bac', BACDailyReportView.as_view()),
+    path('daily-report/supply', SupplyDailyReportView.as_view()),
     path('recent-activities/', RecentActivityList.as_view(), name='recent-activities'),
 
 ]

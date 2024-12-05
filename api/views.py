@@ -569,7 +569,7 @@ class PurchaseOrderItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class BACDailyReportView(APIView):
     """
-    Daily Reports View
+    BAC Daily Reports View
     """
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -606,6 +606,49 @@ class BACDailyReportView(APIView):
         response_data = list(combined_data.values())
         return Response(response_data, status=status.HTTP_200_OK)
     
+
+
+class SupplyDailyReportView(APIView):
+    """
+    Supply Daily Reports View
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, *args, **kwargs):   
+        # Active Purchase Request
+        active_pr = (
+            PurchaseRequest.objects
+            .annotate(day_of_week=ExtractWeekDay("created_at"))  # Annotate with day of week
+            .values("day_of_week")  # Group by day of week
+            .annotate(total_active_pr=Count("pr_no"))  # Aggregate the count field
+        )
+        # Purchase Request in Progress
+        inprogress_pr = (
+            PurchaseRequest.objects.filter(status="Forwarded to Procurement")
+            .annotate(day_of_week=ExtractWeekDay("created_at"))
+            .values("day_of_week")
+            .annotate(total_inprogress_pr=Count("pr_no"))
+        )
+        # order in progress
+        inprogress_po = (
+            PurchaseOrder.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
+            .values("day_of_week")
+            .annotate(total_inprogress_po=Count("po_no"))
+        )
+        # Initialize Combined Data with All Days of the Week
+        day_mapping = {1: "Sunday", 2: "Monday", 3: "Tuesday", 4: "Wednesday", 5: "Thursday", 6: "Friday", 7: "Saturday"}
+        combined_data = {day: {"day": day, "total_active_pr": 0, "total_inprogress_pr": 0, "total_inprogress_po": 0} for day in day_mapping.values()}
+        # Process and Combine Data
+        for data, key in zip([active_pr, inprogress_pr, inprogress_po], ["total_active_pr", "total_inprogress_pr", "total_inprogress_po"]):
+            for entry in data:
+                day_name = day_mapping[entry["day_of_week"]]
+                combined_data[day_name][key] = entry[key]
+        # Convert Combined Data to List
+        response_data = list(combined_data.values())
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+
 
 class InspectionAcceptanceReportList(generics.ListCreateAPIView):
     """
