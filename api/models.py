@@ -101,6 +101,7 @@ class PurchaseRequest(models.Model):
     requested_by = models.CharField(max_length=255)
     approved_by = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField()
 
     def __str__(self):
         return f'{self.pr_no}'
@@ -177,6 +178,7 @@ class PurchaseOrder(models.Model):
     request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField()
 
     def __str__(self):
         return f'{self.po_no}'
@@ -202,19 +204,15 @@ class Supplier(models.Model):
 
 
 class InspectionAcceptanceReport(models.Model):
-    iar_no = models.CharField(max_length=50, primary_key=True)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    iar_no = models.CharField(max_length=100)
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    requisitioning_office = models.CharField(max_length=50)
-    res_center_ode = models.CharField(max_length=10)
-    # maybe create an invoice models soon
-    invoice_no = models.CharField(max_length=10)
-    date_inspected = models.DateTimeField()
-    date_received = models.DateTimeField()
-    is_inspected_and_verified = models.CharField(max_length=10)
-    is_complete = models.CharField(max_length=10)
-    is_partial = models.CharField(max_length=10)
+    items = models.ForeignKey(ItemSelectedForQuote, on_delete=models.CASCADE)
+    date_received = models.DateTimeField(auto_now_add=True)
+    is_complete = models.BooleanField(default=True)
+    is_partial = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
         return f'{self.iar_no}' 
