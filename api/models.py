@@ -212,7 +212,7 @@ class InspectionAcceptanceReport(models.Model):
     is_complete = models.BooleanField(default=True)
     is_partial = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(null=True)
 
     def __str__(self):
         return f'{self.iar_no}' 
