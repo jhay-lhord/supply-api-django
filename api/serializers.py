@@ -49,6 +49,19 @@ class CreateUserSerializer(serializers.ModelSerializer):
         assign_role_and_save(user, role)
         return user
 
+class CustomUserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email']
+        extra_kwargs = {
+            'email': {'required': True},
+        }
+
+    def validate_email(self, value):
+        if CustomUser.objects.exclude(pk=self.instance.pk).filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
+
 class UserListSerializer(serializers.ModelSerializer):
     role  = serializers.SerializerMethodField()
 

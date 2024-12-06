@@ -8,6 +8,7 @@ urlpatterns = [
 
     path('users/', UserList.as_view()),
     path('user/<str:pk>', UserDetail.as_view()),
+    path('users/<int:pk>/edit/', EditUserView.as_view()),
 
     path('campus-director/', CampusDirectorList.as_view()),
     path('campus-director/<str:pk>', CampusDirectorDetail.as_view()),

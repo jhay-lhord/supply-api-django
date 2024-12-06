@@ -97,6 +97,22 @@ class ActivateUserAPIView(APIView):
             return render(request, 'activation_success.html', status=status.HTTP_200_OK)
         except Http404:
             return render(request, 'activation_failed.html', status=status.HTTP_400_BAD_REQUEST)
+        
+class EditUserView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def put(self, request, pk):
+        try:
+            user = CustomUser.objects.get(pk=pk)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CustomUserUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginTokenObtainPairView(TokenObtainPairView):
