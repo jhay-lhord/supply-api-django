@@ -542,6 +542,7 @@ class PurchaseOrderStatusUpdateView(APIView):
             if serializer.is_valid():
                 order.updated_at = timezone.now()
                 order.save()
+                serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PurchaseOrder.DoesNotExist:
@@ -647,25 +648,44 @@ class SupplyDailyReportView(APIView):
         # Convert Combined Data to List
         response_data = list(combined_data.values())
         return Response(response_data, status=status.HTTP_200_OK)
-    
 
 
-class InspectionAcceptanceReportList(generics.ListCreateAPIView):
+class InspectionAndAcceptanceList(generics.ListCreateAPIView):
     """
-    List all  Inspection report , or create a new Inspection report
+    List all  Inspection and acceptance , or create a new Inspection and Acceptance
     """
-    queryset = InspectionAcceptanceReport.objects.select_related('supplier', 'item', 'purchaseOrder').all()
-    serializer_class = InspectionAcceptanceReportSerializer
+    queryset = InspectionAndAcceptance.objects.select_related('supplier', 'item', 'purchaseOrder').all()
+    serializer_class = InspectionAndAcceptanceSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
-class InspectionAcceptanceReportDetail(generics.RetrieveUpdateDestroyAPIView):
+class InspectionAndAcceptanceDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, Update or Delete a Inspection report instance
+    Retrieve, Update or Delete a Inspection and Acceptance instance
     """
-    queryset = InspectionAcceptanceReport.objects.select_related('supplier', 'item', 'purchaseOrder').all()
-    serializer_class = InspectionAcceptanceReportSerializer
+    queryset = InspectionAndAcceptance.objects.select_related('supplier', 'item', 'purchaseOrder').all()
+    serializer_class = InspectionAndAcceptanceSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class DeliveredItemsList(generics.ListCreateAPIView):
+    """
+    List all  Delivered Items , or create a new Delivered Items
+    """
+    queryset = DeliveredItems.objects.select_related('supplier', 'item', 'purchaseOrder').all()
+    serializer_class = DeliveredItemsSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class DeliveredItemsDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a  Delivered Items instance
+    """
+    queryset = DeliveredItems.objects.select_related('supplier', 'item', 'purchaseOrder').all()
+    serializer_class = DeliveredItemsSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 

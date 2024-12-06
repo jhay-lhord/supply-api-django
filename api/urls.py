@@ -41,8 +41,11 @@ urlpatterns = [
     path('purchase-order-item/', PurchaseOrderItemList.as_view()),
     path('purchase-order-item/<str:pk>', PurchaseOrderItemDetail.as_view()),
 
-    path('inspection-report/', InspectionAcceptanceReportList.as_view()),
-    path('inspection-report/<str:pk>', InspectionAcceptanceReportDetail.as_view()),
+    path('items-delivered/', DeliveredItemsList.as_view()),
+    path('items-delivered/<str:pk>', DeliveredItemsDetail.as_view()),
+
+    path('inspection-report/',InspectionAndAcceptanceList.as_view()),
+    path('inspection-report/<str:pk>', InspectionAndAcceptanceDetail.as_view()),
     
     path('requisition-slip/', RequisitionIssueSlipList.as_view()),
     path('requisition-slip/<str:pk>', RequisitionIssueSlipDetail.as_view()),

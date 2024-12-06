@@ -242,11 +242,47 @@ class PurchaseOrderItemSerializer(serializers.ModelSerializer):
             'aoq_item_details': {'read_only': True},
         }
 
+class InspectionAndAcceptanceSerializer(serializers.ModelSerializer):
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
 
-class InspectionAcceptanceReportSerializer(serializers.ModelSerializer):
+    purchase_order = serializers.PrimaryKeyRelatedField(queryset=PurchaseOrder.objects.all(), write_only=True)
+    pr_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
+    
+    class Meta:
+        model = InspectionAndAcceptance
+        fields = '__all__'
+
+        extra_kwargs = {
+            'purchase_request': {'write_only':True},
+            'pr_details': {'read_only':True},
+            'purchase_order': {'write_only':True},
+            'po_details': {'read_only':True},
+        }
+
+class DeliveredItemsSerializer(serializers.ModelSerializer):
+    inspection = serializers.PrimaryKeyRelatedField(queryset=InspectionAndAcceptance.objects.all(), write_only=True)
+    inspection_details = InspectionAndAcceptanceSerializer(source='inspection', read_only=True)
+
+    items = serializers.PrimaryKeyRelatedField(queryset=ItemSelectedForQuote.objects.all(), write_only=True)
+    items_details = ItemSelectedForQuoteSerializer(source='items', read_only=True)
 
     class Meta:
-        model = InspectionAcceptanceReport
+        model = DeliveredItems
+        fields = '__all__'
+
+        extra_kwargs = {
+            'inspection': {'write_only':True},
+            'inspection_details': {'read_only':True},
+            'items': {'write_only':True},
+            'item_details': {'read_only':True}
+        }
+
+
+class DeliveredItemsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DeliveredItems
         fields = '__all__'
 
 

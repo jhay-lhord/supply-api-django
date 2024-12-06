@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils.timezone import now
 
 
 class CustomUserManager(BaseUserManager):
@@ -101,7 +102,7 @@ class PurchaseRequest(models.Model):
     requested_by = models.CharField(max_length=255)
     approved_by = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(default=timezone.now(), null=True)
+    updated_at = models.DateTimeField(default=now, null=True)
 
     def __str__(self):
         return f'{self.pr_no}'
@@ -178,7 +179,7 @@ class PurchaseOrder(models.Model):
     request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(default=timezone.now(), null=True)
+    updated_at = models.DateTimeField(default=now, null=True)
 
     def __str__(self):
         return f'{self.po_no}'
@@ -202,17 +203,22 @@ class Supplier(models.Model):
     def __str__(self):
         return self.supplier_name
 
-
-class InspectionAcceptanceReport(models.Model):
-    iar_no = models.CharField(max_length=100)
+class InspectionAndAcceptance(models.Model):
+    inspection_no = models.CharField(primary_key=True)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class DeliveredItems(models.Model):
+    inspection = models.ForeignKey(InspectionAndAcceptance, on_delete=models.CASCADE)
     items = models.ForeignKey(ItemSelectedForQuote, on_delete=models.CASCADE)
+    quantity_delivered = models.CharField(max_length=50, null=True)
     date_received = models.DateTimeField(auto_now_add=True)
     is_complete = models.BooleanField(default=True)
     is_partial = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(null=True)
+    updated_at = models.DateTimeField(default=now, null=True)
 
     def __str__(self):
         return f'{self.iar_no}' 
