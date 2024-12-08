@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('purchase-request/', PurchaseRequestList.as_view()),
     path('purchase-request/<str:pk>', PurchaseRequestDetail.as_view()),
+    path('purchase-request/<str:pk>/update-status/', PurchaseRequestStatusUpdateView.as_view()),
 
     path('request-for-qoutation/', RequestForQoutationList.as_view()),
     path('request-for-qoutation/<str:pk>', RequestForQoutationDetail.as_view()),
