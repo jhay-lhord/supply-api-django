@@ -98,9 +98,11 @@ class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
     res_center_code = models.CharField(max_length=50)
     purpose = models.CharField(max_length=255)
-    status = models.CharField(max_length=255, default='Not Approved')
+    status = models.CharField(max_length=255)
     requested_by = models.CharField(max_length=255)
     approved_by = models.CharField(max_length=255)
+    mode_of_procurement = models.CharField(max_length=100)
+    total_amount = models.CharField(max_length=150, default="0")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(default=now, null=True)
 

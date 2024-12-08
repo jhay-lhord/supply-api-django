@@ -404,6 +404,24 @@ class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+class PurchaseRequestUpdateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            purchase_request = PurchaseRequest.objects.get(pk=pk)
+            serializer = PurchaseRequestSerializer(purchase_request, data=request.data, partial=True)
+            if serializer.is_valid():
+                purchase_request.updated_at = timezone.now()
+                purchase_request.save()
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PurchaseRequest.DoesNotExist:
+            return Response({"error": "Purchase Request not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 class PurchaseRequestStatusUpdateView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
