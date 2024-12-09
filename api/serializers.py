@@ -292,12 +292,6 @@ class DeliveredItemsSerializer(serializers.ModelSerializer):
         }
 
 
-class DeliveredItemsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = DeliveredItems
-        fields = '__all__'
-
 
 class RequisitionIssueSlipSerializer(serializers.ModelSerializer):
 
