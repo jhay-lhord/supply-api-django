@@ -389,7 +389,7 @@ class PurchaseRequestList(generics.ListCreateAPIView):
     """
     List all Purchase request, or create a new Purchase request
     """
-    queryset = PurchaseRequest.objects.all()
+    queryset = PurchaseRequest.objects.select_related("requisitioner", "campus_director")
     serializer_class = PurchaseRequestSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -399,7 +399,7 @@ class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, Update or Delete a Purchase request instance
     """
-    queryset = PurchaseRequest.objects.all()
+    queryset = PurchaseRequest.objects.select_related("requisitioner", "campus_director")
     serializer_class = PurchaseRequestSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

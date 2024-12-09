@@ -107,12 +107,43 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = '__all__'
 
+class CampusDirectorSerializer(serializers.ModelSerializer):
+    
+    class Meta: 
+        model = CampusDirector
+        fields = '__all__'
+
+
+
+class RequesitionerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Requesitioner
+        fields = '__all__'
+
 
 class PurchaseRequestSerializer(serializers.ModelSerializer):
+    requisitioner = serializers.PrimaryKeyRelatedField(queryset=Requesitioner.objects.all())
+    requisitioner_details = RequesitionerSerializer(source='requisitioner', read_only=True)
+
+    campus_director = serializers.PrimaryKeyRelatedField(queryset=CampusDirector.objects.all())
+    campus_director_details = CampusDirectorSerializer(source='campus_director', read_only=True)
 
     class Meta:
         model = PurchaseRequest
-        fields = '__all__'
+        fields = [
+            'pr_no', 
+            'res_center_code', 
+            'purpose', 
+            'status', 
+            'requisitioner', 
+            'requisitioner_details', 
+            'campus_director', 
+            'campus_director_details', 
+            'mode_of_procurement', 
+            'total_amount', 
+            'created_at', 
+            'updated_at']  
 
 class RequestForQoutationSerializer(serializers.ModelSerializer):
 
@@ -132,7 +163,6 @@ class ItemQuotationSerializer(serializers.ModelSerializer):
             'item': {'write_only': True},     # Specify item as write-only
             'item_details': {'read_only': True}  # Specify item_details as read-only
         }
-
 
 
 class AbstractOfQoutationSerializer(serializers.ModelSerializer):
@@ -179,19 +209,6 @@ class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
             'item_qoutation': {'write_only': True},
             'item_qoutation_details': {'read_only': True},
         }
-
-class RequesitionerSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Requesitioner
-        fields = '__all__'
-
-
-class CampusDirectorSerializer(serializers.ModelSerializer):
-    
-    class Meta: 
-        model = CampusDirector
-        fields = '__all__'
 
 
 class BACMemberSerializer(serializers.ModelSerializer):
