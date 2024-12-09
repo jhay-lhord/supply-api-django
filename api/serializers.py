@@ -260,7 +260,7 @@ class InspectionAndAcceptanceSerializer(serializers.ModelSerializer):
     pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
 
     purchase_order = serializers.PrimaryKeyRelatedField(queryset=PurchaseOrder.objects.all(), write_only=True)
-    pr_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
+    po_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
     
     class Meta:
         model = InspectionAndAcceptance
