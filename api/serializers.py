@@ -278,7 +278,7 @@ class DeliveredItemsSerializer(serializers.ModelSerializer):
     inspection_details = InspectionAndAcceptanceSerializer(source='inspection', read_only=True)
 
     items = serializers.PrimaryKeyRelatedField(queryset=ItemSelectedForQuote.objects.all(), write_only=True)
-    items_details = ItemSelectedForQuoteSerializer(source='items', read_only=True)
+    item_details = ItemSelectedForQuoteSerializer(source='items', read_only=True)
 
     class Meta:
         model = DeliveredItems
