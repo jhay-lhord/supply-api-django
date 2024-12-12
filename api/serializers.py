@@ -177,7 +177,10 @@ class AbstractOfQoutationSerializer(serializers.ModelSerializer):
             'pr_details': {'read_only': True},
         }
 
-     rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
+
+class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
+    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
+    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
 
 
 
