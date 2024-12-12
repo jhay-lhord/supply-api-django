@@ -34,8 +34,11 @@ urlpatterns = [
     path('abstract-of-quotation/', AbstractOfQoutationList.as_view()),
     path('abstract-of-quotation/<str:pk>', AbstractOfQoutationDetail.as_view()),
 
-    path('item-selected-quote/', ItemSelectedForQuoteList.as_view()),
-    path('item-selected-quote/<str:pk>', ItemSelectedForQuoteDetail.as_view()),
+    path('supplier/', SupplierList.as_view()),
+    path('supplier/<str:pk>', SupplierDetail.as_view()),
+
+    path('supplier-item/', SupplierItemList.as_view()),
+    path('supplier-item/<str:pk>', SupplierItemDetail.as_view()),
 
     path('purchase-order/', PurchaseOrderList.as_view()),
     path('purchase-order/<str:pk>', PurchaseOrderDetail.as_view()),

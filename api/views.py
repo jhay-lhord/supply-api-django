@@ -20,6 +20,12 @@ from .resend import send_mail_resend
 from .serializers import *
 from .serializers import CreateUserSerializer
 from .tokens import get_tokens_for_user, token_decoder
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+django_env = os.getenv("DJANGO_ENV")
 
 
 class RegisterUserAPIView(generics.CreateAPIView):
@@ -62,7 +68,10 @@ class RegisterUserAPIView(generics.CreateAPIView):
                 subject = "Account Created Successfully - Pending Activation"
 
                 # Send activation email
-                send_mail_resend(user.email, subject, message_html)
+                if(django_env == "production"):
+                    send_mail_resend(user.email, subject, message_html)
+                else:
+                    print(f"[{user.email}] Account Created Successfully - Pending Activation")
 
             except IntegrityError as e:
                 if 'duplicate key value violates unique constraint' in str(e):
@@ -500,29 +509,6 @@ class AbstractOfQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class ItemSelectedForQuoteList(generics.ListCreateAPIView):
-    """
-    List all Selected Item Ready for Abstract, or add new Selected Item
-    """
-
-    queryset = ItemSelectedForQuote.objects.all()
-    serializer_class = ItemSelectedForQuoteSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-class ItemSelectedForQuoteDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, Update or Delete Selected Item instance
-    """
-
-    queryset = ItemSelectedForQuote.objects.all()
-    serializer_class = ItemSelectedForQuoteSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-
 class SupplierList(generics.ListCreateAPIView):
     """
     List all Supplier, or create a new Supplier
@@ -541,6 +527,26 @@ class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SupplierSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+class SupplierItemList(generics.ListCreateAPIView):
+    """
+    List all Item, or create a new Item
+    """
+    queryset = SupplierItem.objects.all()
+    serializer_class = SupplierItemSerializer
+    authentication_classes = []
+    permission_classes = []
+
+
+class SupplierItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a Item instance
+    """
+    queryset = SupplierItem.objects.all()
+    serializer_class = SupplierItemSerializer
+    authentication_classes = []
+    permission_classes = []
 
 
 class BACMemberDetail(generics.RetrieveUpdateDestroyAPIView):

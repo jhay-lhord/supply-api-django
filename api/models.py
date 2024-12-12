@@ -152,25 +152,32 @@ class ItemQuotation(models.Model):
 
 class AbstractOfQuotation(models.Model):
     aoq_no = models.CharField(primary_key=True)
-    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
-    item_quotation = models.ForeignKey(ItemQuotation, on_delete = models.CASCADE)
-    total_amount = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Abstract of Qoutation for {self.purchase_request} of {self.purchase_request.user}'
 
-
-class ItemSelectedForQuote(models.Model):
-    item_selected_no = models.CharField(max_length=50, primary_key=True)
+class Supplier(models.Model):
+    supplier_no = models.CharField(max_length=50, primary_key=True)
     aoq = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
-    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
-    item_qoutation = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
-    is_item_selected = models.BooleanField(default=False)
-    total_amount = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.supplier_no
+
+
+class SupplierItem(models.Model):
+    supplier_item_no = models.CharField(max_length=50, primary_key=True)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    item_quotation = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
+    total_amount = models.CharField(max_length=150, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.supplier_item_no
 
 
 class PurchaseOrder(models.Model):
@@ -191,19 +198,9 @@ class PurchaseOrderItem(models.Model):
     po_item_no = models.CharField(primary_key=True)
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    aoq_item = models.ForeignKey(ItemSelectedForQuote, on_delete=models.CASCADE)
+    supplier_item = models.ForeignKey(SupplierItem, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
-
-
-class Supplier(models.Model):
-    supplier_no = models.CharField(max_length=50, primary_key=True)
-    supplier_name = models.CharField(max_length=50)
-    tin = models.CharField(max_length=30)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.supplier_name
 
 class InspectionAndAcceptance(models.Model):
     inspection_no = models.CharField(primary_key=True)
@@ -214,7 +211,7 @@ class InspectionAndAcceptance(models.Model):
 
 class DeliveredItems(models.Model):
     inspection = models.ForeignKey(InspectionAndAcceptance, on_delete=models.CASCADE)
-    items = models.ForeignKey(ItemSelectedForQuote, on_delete=models.CASCADE)
+    supplier_item = models.ForeignKey(SupplierItem, on_delete=models.CASCADE)
     quantity_delivered = models.CharField(max_length=50, null=True)
     date_received = models.DateTimeField(auto_now_add=True)
     is_complete = models.BooleanField(default=True)
