@@ -431,6 +431,25 @@ class PurchaseRequestUpdateView(APIView):
             return Response({"error": "Purchase Request not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+class PurchaseRequestMOPUpdateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            purchase_request = PurchaseRequest.objects.get(pk=pk)
+            serializer = PurchaseRequestSerializer(purchase_request, data=request.data, partial=True)
+            if serializer.is_valid():
+                purchase_request.updated_at = timezone.now()
+                purchase_request.save()
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PurchaseRequest.DoesNotExist:
+            return Response({"error": "Purchase Request not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
 class PurchaseRequestStatusUpdateView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -535,8 +554,8 @@ class SupplierItemList(generics.ListCreateAPIView):
     """
     queryset = SupplierItem.objects.all()
     serializer_class = SupplierItemSerializer
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class SupplierItemDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -545,8 +564,8 @@ class SupplierItemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = SupplierItem.objects.all()
     serializer_class = SupplierItemSerializer
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class BACMemberDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -745,6 +764,44 @@ class DeliveredItemsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DeliveredItemsSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+class StockItemsList(generics.ListCreateAPIView):
+    """
+    List all  Stocks Items , or create a new Stock Items
+    """
+    queryset = StockItems.objects.all()
+    serializer_class = StockItemsSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class StockItemsDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, Update or Delete a  Stocks Items instance
+    """
+    queryset = StockItems.objects.all()
+    serializer_class = StockItemsSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class DeliveredItemsUpdateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            delivered_items = DeliveredItems.objects.get(pk=pk)
+            serializer = DeliveredItemsSerializer(delivered_items, data=request.data, partial=True)
+            if serializer.is_valid():
+                delivered_items.save()
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except DeliveredItems.DoesNotExist:
+            return Response({"error": "Delivered Item not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class RequisitionIssueSlipList(generics.ListCreateAPIView):

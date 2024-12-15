@@ -134,6 +134,7 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
         fields = [
             'pr_no', 
             'res_center_code', 
+            'office',
             'purpose', 
             'status', 
             'requisitioner', 
@@ -177,10 +178,6 @@ class AbstractOfQoutationSerializer(serializers.ModelSerializer):
             'pr_details': {'read_only': True},
         }
 
-
-class ItemSelectedForQuoteSerializer(serializers.ModelSerializer):
-    rfq = serializers.PrimaryKeyRelatedField(queryset=RequestForQoutation.objects.all(), write_only=True)
-    rfq_details = RequestForQoutationSerializer(source='rfq', read_only=True)
 
 
 
@@ -243,6 +240,10 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
     abstract_of_quotation = serializers.PrimaryKeyRelatedField(queryset=AbstractOfQuotation.objects.all(), write_only=True)
     aoq_details = AbstractOfQoutationSerializer(source='abstract_of_quotation', read_only=True)
 
+    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), write_only=True)
+    supplier_details = SupplierSerializer(source='supplier', read_only=True)
+
+
     class Meta:
         model=PurchaseOrder
         fields = '__all__'
@@ -254,6 +255,8 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
             'rfq_details': {'read_only': True},
             'abstract_of_quotation': {'write_only': True},
             'aoq_details': {'read_only': True},
+            'supplier': {'write_only': True},
+            'supplier_details': {'read_only': True},
             
         }
         
@@ -265,7 +268,7 @@ class PurchaseOrderItemSerializer(serializers.ModelSerializer):
     pr_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
     
     supplier_item = serializers.PrimaryKeyRelatedField(queryset=SupplierItem.objects.all(), write_only=True)
-    aoq_item_details = SupplierItemSerializer(source='supplier_item', read_only=True)
+    supplier_item_details = SupplierItemSerializer(source='supplier_item', read_only=True)
 
     class Meta:
         model = PurchaseOrderItem
@@ -315,6 +318,25 @@ class DeliveredItemsSerializer(serializers.ModelSerializer):
             'items': {'write_only':True},
             'item_details': {'read_only':True}
         }
+
+class StockItemsSerializer(serializers.ModelSerializer):
+    inspection = serializers.PrimaryKeyRelatedField(queryset=InspectionAndAcceptance.objects.all(), write_only=True)
+    inspection_details = InspectionAndAcceptanceSerializer(source='inspection', read_only=True)
+
+    supplier_item = serializers.PrimaryKeyRelatedField(queryset=SupplierItem.objects.all(), write_only=True)
+    item_details = SupplierItemSerializer(source='supplier_item', read_only=True)
+
+    class Meta:
+        model = DeliveredItems
+        fields = '__all__'
+
+        extra_kwargs = {
+            'inspection': {'write_only':True},
+            'inspection_details': {'read_only':True},
+            'items': {'write_only':True},
+            'item_details': {'read_only':True}
+        }
+
 
 
 class RequisitionIssueSlipSerializer(serializers.ModelSerializer):

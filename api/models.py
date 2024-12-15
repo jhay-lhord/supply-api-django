@@ -96,7 +96,8 @@ class RecentActivity(models.Model):
 
 class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
-    res_center_code = models.CharField(max_length=50)
+    res_center_code = models.CharField(max_length=50, null=True)
+    office = models.CharField(max_length=200)
     purpose = models.CharField(max_length=255)
     status = models.CharField(max_length=255)
     requisitioner = models.ForeignKey('Requesitioner', related_name="purchase_requests", on_delete=models.CASCADE)
@@ -187,6 +188,7 @@ class PurchaseOrder(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     request_for_quotation = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     abstract_of_quotation = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(default=now, null=True)
 
@@ -210,6 +212,19 @@ class InspectionAndAcceptance(models.Model):
 
 
 class DeliveredItems(models.Model):
+    inspection = models.ForeignKey(InspectionAndAcceptance, on_delete=models.CASCADE)
+    supplier_item = models.ForeignKey(SupplierItem, on_delete=models.CASCADE)
+    quantity_delivered = models.CharField(max_length=50, null=True)
+    date_received = models.DateTimeField(auto_now_add=True)
+    is_complete = models.BooleanField(default=True)
+    is_partial = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(default=now, null=True)
+
+    def __str__(self):
+        return f'{self.iar_no}' 
+
+class StockItems(models.Model):
     inspection = models.ForeignKey(InspectionAndAcceptance, on_delete=models.CASCADE)
     supplier_item = models.ForeignKey(SupplierItem, on_delete=models.CASCADE)
     quantity_delivered = models.CharField(max_length=50, null=True)
