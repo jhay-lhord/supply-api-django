@@ -292,7 +292,7 @@ class LoginTokenOfflineView(TokenObtainPairView):
 class RecentActivityList(generics.ListAPIView):
     queryset = RecentActivity.objects.all()
     serializer_class = RecentActivitySerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = None 
 
@@ -303,7 +303,7 @@ class UserList(generics.ListCreateAPIView):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserListSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -313,7 +313,7 @@ class RequisitionerList(generics.ListCreateAPIView):
     """
     queryset = Requesitioner.objects.all()
     serializer_class = RequesitionerSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -323,7 +323,7 @@ class RequisitionerDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Requesitioner.objects.all()
     serializer_class = RequesitionerSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -333,7 +333,7 @@ class CampusDirectorList(generics.ListCreateAPIView):
     """
     queryset = CampusDirector.objects.all()
     serializer_class = CampusDirectorSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -343,7 +343,7 @@ class CampusDirectorDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = CampusDirector.objects.all()
     serializer_class = CampusDirectorSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -353,7 +353,7 @@ class BACMemberList(generics.ListCreateAPIView):
     """
     queryset = BACMember.objects.all()
     serializer_class = BACMemberSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -363,7 +363,7 @@ class BACMemberDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = BACMember.objects.all()
     serializer_class = BACMemberSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -373,7 +373,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserListSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def partial_update(self, request, *args, **kwargs):
@@ -410,8 +410,8 @@ class ItemList(generics.ListCreateAPIView):
     """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -420,7 +420,7 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -428,7 +428,7 @@ class ItemsDetail(APIView):
     """
     Retrieve Items in Purchase Request instance
     """
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, field_name, value, *args, **kwargs):
@@ -459,7 +459,7 @@ class PurchaseRequestList(generics.ListCreateAPIView):
     """
     queryset = PurchaseRequest.objects.select_related("requisitioner", "campus_director")
     serializer_class = PurchaseRequestSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -469,11 +469,11 @@ class PurchaseRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = PurchaseRequest.objects.select_related("requisitioner", "campus_director")
     serializer_class = PurchaseRequestSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 class PurchaseRequestUpdateView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -491,7 +491,7 @@ class PurchaseRequestUpdateView(APIView):
 
 
 class PurchaseRequestMOPUpdateView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -510,7 +510,7 @@ class PurchaseRequestMOPUpdateView(APIView):
 
 
 class PurchaseRequestStatusUpdateView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -533,7 +533,7 @@ class RequestForQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = RequestForQoutation.objects.all()
     serializer_class = RequestForQoutationSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -543,7 +543,7 @@ class RequestForQoutationList(generics.ListCreateAPIView):
     """
     queryset = RequestForQoutation.objects.all()
     serializer_class = RequestForQoutationSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -553,7 +553,7 @@ class ItemQuotationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = ItemQuotation.objects.all()
     serializer_class = ItemQuotationSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -563,7 +563,7 @@ class ItemQuotationList(generics.ListCreateAPIView):
     """
     queryset = ItemQuotation.objects.all()
     serializer_class = ItemQuotationSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -573,7 +573,7 @@ class AbstractOfQoutationList(generics.ListCreateAPIView):
     """
     queryset = AbstractOfQuotation.objects.all()
     serializer_class = AbstractOfQoutationSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -583,7 +583,7 @@ class AbstractOfQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = AbstractOfQuotation.objects.all()
     serializer_class = AbstractOfQoutationSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -593,7 +593,7 @@ class SupplierList(generics.ListCreateAPIView):
     """
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -603,7 +603,7 @@ class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -613,7 +613,7 @@ class SupplierItemList(generics.ListCreateAPIView):
     """
     queryset = SupplierItem.objects.all()
     serializer_class = SupplierItemSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -623,7 +623,7 @@ class SupplierItemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = SupplierItem.objects.all()
     serializer_class = SupplierItemSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -633,7 +633,7 @@ class BACMemberDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = BACMember.objects.all()
     serializer_class = BACMemberSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -643,7 +643,7 @@ class BACMemberList(generics.ListCreateAPIView):
     """
     queryset = BACMember.objects.all()
     serializer_class = BACMemberSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -653,7 +653,7 @@ class PurchaseOrderList(generics.ListCreateAPIView):
     """
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -663,11 +663,11 @@ class PurchaseOrderDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 class PurchaseOrderStatusUpdateView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -689,7 +689,7 @@ class PurchaseOrderItemList(generics.ListCreateAPIView):
     """
     queryset = PurchaseOrderItem.objects.all()
     serializer_class = PurchaseOrderItemSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -699,7 +699,7 @@ class PurchaseOrderItemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = PurchaseOrderItem.objects.all()
     serializer_class = PurchaseOrderItemSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -708,7 +708,7 @@ class BACDailyReportView(APIView):
     BAC Daily Reports View
     """
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
 
     def get(self, request, *args, **kwargs):   
         # Approved Data
@@ -749,7 +749,7 @@ class SupplyDailyReportView(APIView):
     Supply Daily Reports View
     """
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
 
     def get(self, request, *args, **kwargs):   
         # Active Purchase Request
@@ -791,7 +791,7 @@ class InspectionAndAcceptanceList(generics.ListCreateAPIView):
     """
     queryset = InspectionAndAcceptance.objects.all()
     serializer_class = InspectionAndAcceptanceSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -801,7 +801,7 @@ class InspectionAndAcceptanceDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = InspectionAndAcceptance.objects.all()
     serializer_class = InspectionAndAcceptanceSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -811,7 +811,7 @@ class DeliveredItemsList(generics.ListCreateAPIView):
     """
     queryset = DeliveredItems.objects.all()
     serializer_class = DeliveredItemsSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -821,7 +821,7 @@ class DeliveredItemsDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = DeliveredItems.objects.all()
     serializer_class = DeliveredItemsSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -831,7 +831,7 @@ class StockItemsList(generics.ListCreateAPIView):
     """
     queryset = StockItems.objects.all()
     serializer_class = StockItemsSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -841,12 +841,12 @@ class StockItemsDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = StockItems.objects.all()
     serializer_class = StockItemsSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
 class DeliveredItemsUpdateView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -869,7 +869,7 @@ class RequisitionIssueSlipList(generics.ListCreateAPIView):
     """
     queryset = RequisitionIssueSlip.objects.select_related('item').all()
     serializer_class = RequisitionIssueSlipSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -879,5 +879,5 @@ class RequisitionIssueSlipDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = RequisitionIssueSlip.objects.all()
     serializer_class = RequisitionIssueSlipSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
