@@ -161,7 +161,7 @@ class UserInformationView(APIView):
     def get(self, request):
         user = request.user
         return Response({
-            'username': user.username,
+            'fullname': f"{user.first_name} {user.last_name}",
             'email': user.email,
             'role' : user.groups.first().name if user.groups.first() else None,
         })
