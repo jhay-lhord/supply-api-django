@@ -8,12 +8,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.views import TokenRefreshView
+from .auth import CookieJWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from django.db.models.functions import ExtractWeekDay
 from django.db.models import Count
+
 
 from .models import *
 from .resend import send_mail_resend
@@ -25,7 +28,7 @@ import os
 
 load_dotenv()
 
-django_env = os.getenv("DJANGO_ENV")
+is_production = os.getenv("DJANGO_ENV") == "production"
 
 
 class RegisterUserAPIView(generics.CreateAPIView):
@@ -68,7 +71,7 @@ class RegisterUserAPIView(generics.CreateAPIView):
                 subject = "Account Created Successfully - Pending Activation"
 
                 # Send activation email
-                if(django_env == "production"):
+                if(is_production):
                     send_mail_resend(user.email, subject, message_html)
                 else:
                     print(f"[{user.email}] Account Created Successfully - Pending Activation")
@@ -129,7 +132,7 @@ class LoginTokenObtainPairView(TokenObtainPairView):
     Login User credentials
     """
     serializer_class = LoginTokenObtainPairSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = []
 
     def post(self, request, *args, **kwargs):
@@ -147,9 +150,21 @@ class LoginTokenObtainPairView(TokenObtainPairView):
             # send_OTP_mail(user.email, subject, message_html )
             send_mail_resend(user.email, subject, message_html)
 
-            return Response({'message': 'OTP sent to your email, Please verify'}, status=status.HTTP_200_OK)
+            return Response({'message': 'OTP sent to your email, Please verify', 'email': user.email}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class UserInformationView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CookieJWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email,
+            'role' : user.groups.first().name if user.groups.first() else None,
+        })
 
 
 class OTPVerificationView(APIView):
@@ -180,19 +195,63 @@ class OTPVerificationView(APIView):
                     refresh['role'] = role.name if role else None
                     refresh['email'] = user.email
                     refresh['fullname'] = f'{user.first_name} {user.last_name}'
-
-                    return Response({
-                        'refresh': str(refresh),
-                        'access': str(refresh.access_token),
+                    
+                    # Create the response object
+                    response = Response({
                         'message': 'Login Successfully'
-                    },
-                                    status=status.HTTP_200_OK)
+                    }, status=status.HTTP_200_OK)
+                    
+                    # Set tokens as HTTP-only cookies
+                    response.set_cookie(
+                        key='refresh_token',
+                        value=str(refresh),
+                        httponly=True,
+                        secure=is_production,
+                        samesite='None'
+                    )
+                    response.set_cookie(
+                        key='access_token',
+                        value=str(refresh.access_token),
+                        httponly=True,
+                        secure=is_production, 
+                        samesite='None'
+                    )
+
+                    return response
+
                 else:
                     return Response({'error': 'Invalid or Expired OTP'}, status=status.HTTP_400_BAD_REQUEST)
             except CustomUser.DoesNotExist:
                 return Response({'error': 'User Does not Exist'}, status=status.Http_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RefreshTokenView(APIView):
+    permission_classes = []
+    authentication_classes = []
+    def post(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+        print(f"Refresh Token: {refresh_token}")
+        if refresh_token:
+            try:
+                refresh = RefreshToken(refresh_token)
+                access_token = str(refresh.access_token)
+
+                response = Response({'message': 'Token refreshed',  'access_token': access_token})
+                response.set_cookie(
+                    key='access_token',
+                    value=access_token,
+                    httponly=True,
+                    secure=is_production,
+                    samesite='None',
+                    max_age=3600,
+                )
+                return response
+            except Exception:
+                return Response({'error': 'Invalid refresh token'}, status=400)
+
+        return Response({'error': 'No refresh token provided'}, status=400)
+
 
 
 class LoginTokenOfflineView(TokenObtainPairView):
