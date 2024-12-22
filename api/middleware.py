@@ -22,8 +22,7 @@ def get_user_from_token(request):
     token = request.COOKIES.get("access_token")
     if token:
         try:
-            _token = token.split(" ")[1]  # Extract the token
-            decoded_data = jwt.decode(_token, settings.SECRET_KEY, algorithms=["HS256"])
+            decoded_data = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             user_id = decoded_data.get("user_id")
             logger.info(f"Decoded user_id: {user_id} from token")
             
@@ -47,13 +46,18 @@ def get_user_from_token(request):
 class AuthenticatedUserMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
+        
     def __call__(self, request):
         logger.debug("Processing request through AuthenticatedUserMiddleware.")
-        user = get_user_from_token(request)
-        set_current_user(user)
-        request.user = SimpleLazyObject(lambda: user)
-        roles = get_user_role(user)
+        try:
+            user = get_user_from_token(request)
+            logger.debug(f"User extracted from token: {user}")
+            set_current_user(user)
+            request.user = SimpleLazyObject(lambda: user)
+            roles = get_user_role(user)
+            logger.debug(f"Roles for user {user}: {roles}")
+        except Exception as e:
+            logger.error(f"Unexpected error in middleware: {e}")
         response = self.get_response(request)
-        logger.debug(f'Processed response in AuthenticatedUserMiddleware. {response}')
+        logger.debug(f'Processed response in AuthenticatedUserMiddleware: {response}')
         return response
