@@ -19,11 +19,11 @@ def get_user_role(user):
     return []
 
 def get_user_from_token(request):
-    auth_header = request.headers.get("Authorization")
-    if auth_header:
+    token = request.COOKIES.get("access_token")
+    if token:
         try:
-            token = auth_header.split(" ")[1]  # Extract the token
-            decoded_data = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            _token = token.split(" ")[1]  # Extract the token
+            decoded_data = jwt.decode(_token, settings.SECRET_KEY, algorithms=["HS256"])
             user_id = decoded_data.get("user_id")
             logger.info(f"Decoded user_id: {user_id} from token")
             
@@ -40,7 +40,7 @@ def get_user_from_token(request):
         except Exception as e:
             logger.error(f"An unexpected error occurred: {str(e)}")
     else:
-        logger.info("No Authorization header found in request.")
+        logger.info("No JWT token found in cookies.")
     
     return AnonymousUser()
 
