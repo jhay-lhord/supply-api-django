@@ -134,6 +134,7 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
         fields = [
             'pr_no', 
             'res_center_code', 
+            'fund_cluster',
             'office',
             'purpose', 
             'status', 
