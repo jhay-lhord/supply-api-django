@@ -19,4 +19,4 @@ COPY . /django-app/
 EXPOSE 8000
 
 #run the application using gunicorn
-CMD ["sh", "-c", "gunicorn myproject.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3 --threads 2"]
+CMD ["sh", "-c", "gunicorn api.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3 --threads 2"]
