@@ -296,7 +296,6 @@ class RecentActivityList(generics.ListAPIView):
     serializer_class = RecentActivitySerializer
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
-    pagination_class = None 
 
 
 class UserList(generics.ListCreateAPIView):
