@@ -750,82 +750,46 @@ class BACDailyReportView(APIView):
         response_data = list(combined_data.values())
         return Response(response_data, status=status.HTTP_200_OK)
 
-    """
-    BAC Daily Reports View
-    """
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [CookieJWTAuthentication]
-
-    def get(self, request, *args, **kwargs):   
-        # Approved Data
-        approved = (
-            PurchaseRequest.objects.filter(status="Forwarded to Procurement")  # Filter by status
-            .annotate(day_of_week=ExtractWeekDay("created_at"))  # Annotate with day of week
-            .values("day_of_week")  # Group by day of week
-            .annotate(total_approved=Count("pr_no"))  # Aggregate the count field
-        )
-        # Quotation Data
-        quotation = (
-            RequestForQoutation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
-            .values("day_of_week")
-            .annotate(total_quotation=Count("rfq_no"))
-        )
-        # Abstract Data
-        abstract = (
-            AbstractOfQuotation.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
-            .values("day_of_week")
-            .annotate(total_abstract=Count("aoq_no"))
-        )
-        # Initialize Combined Data with All Days of the Week
-        day_mapping = {1: "Sunday", 2: "Monday", 3: "Tuesday", 4: "Wednesday", 5: "Thursday", 6: "Friday", 7: "Saturday"}
-        combined_data = {day: {"day": day, "total_approved": 0, "total_quotation": 0, "total_abstract": 0} for day in day_mapping.values()}
-        # Process and Combine Data
-        for data, key in zip([approved, quotation, abstract], ["total_approved", "total_quotation", "total_abstract"]):
-            for entry in data:
-                day_name = day_mapping[entry["day_of_week"]]
-                combined_data[day_name][key] = entry[key]
-        # Convert Combined Data to List
-        response_data = list(combined_data.values())
-        return Response(response_data, status=status.HTTP_200_OK)
-    
-
 
 class SupplyDailyReportView(APIView):
     """
-    Supply Daily Reports View
+    Supply Daily Reports View for the past 7 days.
     """
     permission_classes = [IsAuthenticated]
     authentication_classes = [CookieJWTAuthentication]
 
-    def get(self, request, *args, **kwargs):   
+    def get(self, request, *args, **kwargs):  
+        seven_days_ago = now() - timedelta(days=7)
+         
         # Active Purchase Request
         active_pr = (
             PurchaseRequest.objects
-            .annotate(day_of_week=ExtractWeekDay("created_at"))  # Annotate with day of week
-            .values("day_of_week")  # Group by day of week
+            .annotate(day=TruncDate("created_at"))  # Annotate with day of week
+            .values("day") 
             .annotate(total_active_pr=Count("pr_no"))  # Aggregate the count field
         )
         # Purchase Request in Progress
         inprogress_pr = (
             PurchaseRequest.objects.filter(status="Forwarded to Procurement")
-            .annotate(day_of_week=ExtractWeekDay("created_at"))
-            .values("day_of_week")
+            .annotate(day=TruncDate("created_at"))
+            .values("day")
             .annotate(total_inprogress_pr=Count("pr_no"))
         )
         # order in progress
         inprogress_po = (
-            PurchaseOrder.objects.annotate(day_of_week=ExtractWeekDay("created_at"))
-            .values("day_of_week")
+            PurchaseOrder.objects.annotate(day=TruncDate("created_at"))
+            .values("day")
             .annotate(total_inprogress_po=Count("po_no"))
         )
-        # Initialize Combined Data with All Days of the Week
-        day_mapping = {1: "Sunday", 2: "Monday", 3: "Tuesday", 4: "Wednesday", 5: "Thursday", 6: "Friday", 7: "Saturday"}
-        combined_data = {day: {"day": day, "total_active_pr": 0, "total_inprogress_pr": 0, "total_inprogress_po": 0} for day in day_mapping.values()}
+        # Initialize Combined Data for the last 7 days
+        date_range = [(now() - timedelta(days=i)).date() for i in range(7)]
+        combined_data = {str(day): {"day": str(day), "total_active_pr": 0, "total_inprogress_pr": 0, "total_inprogress_po": 0} for day in day_mapping.values()}
         # Process and Combine Data
         for data, key in zip([active_pr, inprogress_pr, inprogress_po], ["total_active_pr", "total_inprogress_pr", "total_inprogress_po"]):
             for entry in data:
-                day_name = day_mapping[entry["day_of_week"]]
-                combined_data[day_name][key] = entry[key]
+                day_str = str(entry["day"])
+                if day_str in combined_data:
+                    combined_data[day_str][key] = entry[key]
         # Convert Combined Data to List
         response_data = list(combined_data.values())
         return Response(response_data, status=status.HTTP_200_OK)
