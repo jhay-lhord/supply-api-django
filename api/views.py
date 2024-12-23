@@ -38,7 +38,7 @@ class RegisterUserAPIView(generics.CreateAPIView):
     Register a new User
     """
     serializer_class = CreateUserSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -114,7 +114,7 @@ class ActivateUserAPIView(APIView):
         
 class EditUserView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
 
     def put(self, request, pk):
         try:
