@@ -14,6 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.utils import timezone
+from datetime import timedelta
 from django.utils.timezone import now
 from django.db.models.functions import TruncDate
 from django.db.models import Count
