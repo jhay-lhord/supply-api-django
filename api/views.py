@@ -14,7 +14,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.utils import timezone
-from django.db.models.functions import ExtractWeekDay
+from django.utils.timezone import now
+from django.db.models.functions import TruncDate
 from django.db.models import Count
 
 
@@ -704,6 +705,51 @@ class PurchaseOrderItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class BACDailyReportView(APIView):
+    """
+    BAC Daily Reports View for the past 7 days.
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CookieJWTAuthentication]
+
+    def get(self, request, *args, **kwargs):   
+        seven_days_ago = now() - timedelta(days=7)
+        
+        # Approved Data
+        approved = (
+            PurchaseRequest.objects.filter(status="Forwarded to Procurement", created_at__gte=seven_days_ago)
+            .annotate(day=TruncDate("created_at"))
+            .values("day")
+            .annotate(total_approved=Count("pr_no"))
+        )
+        # Quotation Data
+        quotation = (
+            RequestForQoutation.objects.filter(created_at__gte=seven_days_ago)
+            .annotate(day=TruncDate("created_at"))
+            .values("day")
+            .annotate(total_quotation=Count("rfq_no"))
+        )
+        # Abstract Data
+        abstract = (
+            AbstractOfQuotation.objects.filter(created_at__gte=seven_days_ago)
+            .annotate(day=TruncDate("created_at"))
+            .values("day")
+            .annotate(total_abstract=Count("aoq_no"))
+        )
+        # Initialize Combined Data for the Last 7 Days
+        date_range = [(now() - timedelta(days=i)).date() for i in range(7)]
+        combined_data = {str(day): {"day": str(day), "total_approved": 0, "total_quotation": 0, "total_abstract": 0} for day in date_range}
+
+        # Combine Data
+        for data, key in zip([approved, quotation, abstract], ["total_approved", "total_quotation", "total_abstract"]):
+            for entry in data:
+                day_str = str(entry["day"])
+                if day_str in combined_data:
+                    combined_data[day_str][key] = entry[key]
+
+        # Convert Combined Data to List
+        response_data = list(combined_data.values())
+        return Response(response_data, status=status.HTTP_200_OK)
+
     """
     BAC Daily Reports View
     """
