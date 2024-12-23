@@ -152,7 +152,7 @@ class LoginTokenObtainPairView(TokenObtainPairView):
             # send_OTP_mail(user.email, subject, message_html )
             send_mail_resend(user.email, subject, message_html)
 
-            return Response({'message': 'OTP sent to your email, Please verify', 'email': user.email}, status=status.HTTP_200_OK)
+            return Response({'message': f"We've sent a verification code to {user.email}. Please check your inbox and verify your account.", 'email': user.email}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
