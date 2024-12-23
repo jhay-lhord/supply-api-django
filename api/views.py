@@ -738,12 +738,12 @@ class BACDailyReportView(APIView):
         )
         # Initialize Combined Data for the Last 7 Days
         date_range = [(now() - timedelta(days=i)).date() for i in range(7)]
-        combined_data = {str(day): {"day": str(day), "total_approved": 0, "total_quotation": 0, "total_abstract": 0} for day in date_range}
+        combined_data = {day.strftime("%b %d"): {"day": day.strftime("%b %d"), "total_approved": 0, "total_quotation": 0, "total_abstract": 0} for day in date_range}
 
         # Combine Data
         for data, key in zip([approved, quotation, abstract], ["total_approved", "total_quotation", "total_abstract"]):
             for entry in data:
-                day_str = str(entry["day"])
+                day_str = entry["day"].strftime("%b %d")
                 if day_str in combined_data:
                     combined_data[day_str][key] = entry[key]
 
@@ -784,11 +784,11 @@ class SupplyDailyReportView(APIView):
         )
         # Initialize Combined Data for the last 7 days
         date_range = [(now() - timedelta(days=i)).date() for i in range(7)]
-        combined_data = {str(day): {"day": str(day), "total_active_pr": 0, "total_inprogress_pr": 0, "total_inprogress_po": 0} for day in date_range}
+        combined_data = {day.strftime("%b %d"): {"day": day.strftime("%b %d"), "total_active_pr": 0, "total_inprogress_pr": 0, "total_inprogress_po": 0} for day in date_range}
         # Process and Combine Data
         for data, key in zip([active_pr, inprogress_pr, inprogress_po], ["total_active_pr", "total_inprogress_pr", "total_inprogress_po"]):
             for entry in data:
-                day_str = str(entry["day"])
+                day_str = entry["day"].strftime("%b %d")
                 if day_str in combined_data:
                     combined_data[day_str][key] = entry[key]
         # Convert Combined Data to List
