@@ -310,8 +310,8 @@ class LogoutAPIView(APIView):
         response = Response({"message": "Logged out successfully."})
 
         # Clear both tokens
-        response.delete_cookie('refresh_token', samesite='None', secure=True)
-        response.delete_cookie('access_token', samesite='None', secure=True)
+        response.delete_cookie('refresh_token')
+        response.delete_cookie('access_token')
 
         return response
 
