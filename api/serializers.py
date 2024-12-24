@@ -181,7 +181,6 @@ class AbstractOfQoutationSerializer(serializers.ModelSerializer):
 
 
 
-
 class BACMemberSerializer(serializers.ModelSerializer):
 
     class Meta:

@@ -198,9 +198,16 @@ class OTPVerificationView(APIView):
                     refresh['email'] = user.email
                     refresh['fullname'] = f'{user.first_name} {user.last_name}'
                     
+                    user = {
+                        'email': user.email,
+                        'role': role.name if role else None,
+                        'fullname': f'{user.first_name} {user.last_name}'
+                    }
+                    
                     # Create the response object
                     response = Response({
-                        'message': 'Login Successfully'
+                        'message': 'Login Successfully',
+                        'user': user,
                     }, status=status.HTTP_200_OK)
                     
                     # Set tokens as HTTP-only cookies
