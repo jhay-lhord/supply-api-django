@@ -14,6 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.utils import timezone
+from django.contrib.auth import logout
 from datetime import timedelta
 from django.utils.timezone import now
 from django.db.models.functions import TruncDate
@@ -296,6 +297,23 @@ class LoginTokenOfflineView(TokenObtainPairView):
         
         # If authentication fails, return an error
         return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class LogoutAPIView(APIView):
+    """
+    API endpoint for logging out the user.
+    """
+    def post(self, request, *args, **kwargs):
+        logout(request)
+
+        response = Response({"message": "Logged out successfully."})
+
+        # Clear both tokens
+        response.delete_cookie('refresh_token', samesite='None', secure=True)
+        response.delete_cookie('access_token', samesite='None', secure=True)
+
+        return response
 
 
 class RecentActivityList(generics.ListAPIView):
