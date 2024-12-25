@@ -23,7 +23,7 @@ class CookieJWTAuthentication(JWTAuthentication):
           
         try:
             user = self.get_user(validated_token) 
-            return user, validated_token
+            return (user, validated_token)
         except Exception as e:
             logger.error(f"Error retrieving User: {str(e)}")
             raise AuthenticationFailed(f"Error retrieving User: {str(e)}")

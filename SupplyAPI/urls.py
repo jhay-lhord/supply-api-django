@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from api.views import ActivateUserAPIView, LoginTokenObtainPairView, OTPVerificationView, RegisterUserAPIView, LoginTokenOfflineView, UserInformationView, RefreshTokenView, LogoutAPIView
+from api.views import ActivateUserAPIView, LoginTokenObtainPairView, OTPVerificationView, RegisterUserAPIView, LoginTokenOfflineView, CheckAuthView, RefreshTokenView, LogoutAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/user/', UserInformationView.as_view(), name='user_info'),
+    path('api/user/check_auth', CheckAuthView.as_view(), name='user_info'),
     path('api/user/register/', RegisterUserAPIView.as_view(), name='register'),
     path('api/user/logout/', LogoutAPIView.as_view(), name='logout'),
     path('api/user/activate/<str:token>/', ActivateUserAPIView.as_view(), name='activate'),

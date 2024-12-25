@@ -82,7 +82,7 @@ class RecentActivity(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     user_role = models.CharField(max_length=100)
     activity_type = models.CharField(max_length=10, choices=ACTIVITY_TYPES)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=100)
     content_object = GenericForeignKey('content_type', 'object_id')

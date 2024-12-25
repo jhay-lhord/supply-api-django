@@ -157,17 +157,20 @@ class LoginTokenObtainPairView(TokenObtainPairView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-class UserInformationView(APIView):
+class CheckAuthView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [CookieJWTAuthentication]
 
-    def get(self, request):
-        user = request.user
-        return Response({
-            'fullname': f"{user.first_name} {user.last_name}",
-            'email': user.email,
-            'role' : user.groups.first().name if user.groups.first() else None,
-        })
+    def get(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            return Response({
+                "email": user.email,
+                "fullname": f"{user.first_name} {user.last_name}",
+                "role": user.groups.first().name if user.groups.exists() else "User",
+            })
+        except Exception as e:
+            raise AuthenticationFailed("Invalid token or user not authenticated")
 
 
 class OTPVerificationView(APIView):
@@ -317,11 +320,17 @@ class LogoutAPIView(APIView):
 
 
 class RecentActivityList(generics.ListAPIView):
-    queryset = RecentActivity.objects.all()
+    """
+    List recent activities created within the last 7 days.
+    """
     serializer_class = RecentActivitySerializer
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        seven_days_ago = now() - timedelta(days=7)
+        queryset = RecentActivity.objects.filter(timestamp__gte=seven_days_ago).select_related('user', 'content_type')
+        return queryset 
 
 class UserList(generics.ListCreateAPIView):
     """

@@ -49,7 +49,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'AUTH_COOKIE': 'access_token', 
     'AUTH_COOKIE_HTTP_ONLY': True,
-    'AUTH_COOKIE_SECURE': True,  
+    'AUTH_COOKIE_SECURE': os.getenv('AUTH_COOKIE_SECURE'),  
     'AUTH_COOKIE_SAMESITE': 'None', 
 }
 
