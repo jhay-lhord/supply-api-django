@@ -46,11 +46,13 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = { 
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_COOKIE': 'access_token', 
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_SECURE': os.getenv('AUTH_COOKIE_SECURE'),  
-    'AUTH_COOKIE_SAMESITE': 'None', 
+    'AUTH_COOKIE_SAMESITE': 'Strict', 
 }
 
 CORS_ALLOW_CREDENTIALS = True
@@ -74,7 +76,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions',
+    'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions','rest_framework_simplejwt.token_blacklist',
     'django.contrib.messages', 'django.contrib.staticfiles', 'api', 'rest_framework', 'corsheaders'
 ]
 
