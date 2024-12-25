@@ -11,6 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenRefreshView
 from .auth import CookieJWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.utils import timezone
@@ -238,10 +239,50 @@ class OTPVerificationView(APIView):
                 return Response({'error': 'User Does not Exist'}, status=status.Http_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
-class RefreshTokenView(APIView):
+class ResendOTPView(APIView):
+    """
+    Resend OTP View
+    """
     permission_classes = []
     authentication_classes = []
+    serializer_class = ResendOTPSerializer
+
+    def post(self, request):
+        serializer = ResendOTPSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+
+            try:
+                user = CustomUser.objects.get(email=email)
+
+                # generate new OTP
+                user.generate_otp()
+
+                subject = 'Your OTP Code'
+                message_html = f'<p>Your new OTP code is <strong>{user.otp_code}</strong>. It is valid for 5 minutes.</p>'
+
+                # send_OTP_mail(user.email, subject, message_html )
+                send_mail_resend(user.email, subject, message_html)
+
+                return Response({
+                    'message': 'OTP has been resent to your email address.'
+                }, status=status.HTTP_200_OK)
+
+            except CustomUser.DoesNotExist:
+                return Response({
+                    'error': 'User does not exist with this email address.'
+                }, status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RefreshTokenView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CookieJWTAuthentication]
+    
     def post(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
         print(f"Refresh Token: {refresh_token}")
@@ -274,6 +315,7 @@ class LoginTokenOfflineView(TokenObtainPairView):
 
     serializer_class = LoginTokenObtainPairSerializer
     authentication_classes = [] 
+    
     def post(self, request, *args, **kwargs):   
         email = request.data.get('email')
         password = request.data.get('password')
@@ -303,21 +345,34 @@ class LoginTokenOfflineView(TokenObtainPairView):
     
 
 
-class LogoutAPIView(APIView):
-    """
-    API endpoint for logging out the user.
-    """
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CookieJWTAuthentication]
+
     def post(self, request, *args, **kwargs):
-        logout(request)
+        try:
+            # Retrieve the refresh token from cookies or request data
+            refresh_token = request.COOKIES.get('refresh_token') or request.data.get('refresh_token')
 
-        response = Response({"message": "Logged out successfully."})
+            if not refresh_token:
+                return Response({"detail": "Refresh token is required"}, status=400)
 
-        # Clear both tokens
-        response.delete_cookie('refresh_token')
-        response.delete_cookie('access_token')
+            # Blacklist the refresh token
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            print("Token Blacklisted and cant be used in future authentication")
 
-        return response
+            # Optionally delete tokens from cookies
+            response = Response({"message": "Logout successful"})
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            return response
+        except TokenError as e:
+            return Response({"detail": "Invalid token"}, status=400)
+        except Exception as e:
+            return Response({"detail": f"Error during logout: {str(e)}"}, status=500)
 
+    
 
 class RecentActivityList(generics.ListAPIView):
     """

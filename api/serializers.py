@@ -99,6 +99,9 @@ class RecentActivitySerializer(serializers.ModelSerializer):
 class OTPVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     otp_code = serializers.CharField(max_length=6)
+    
+class ResendOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
 
 class ItemSerializer(serializers.ModelSerializer):
