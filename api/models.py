@@ -98,7 +98,7 @@ class PurchaseRequest(models.Model):
     pr_no = models.CharField(max_length=50, primary_key=True)
     res_center_code = models.CharField(max_length=50, null=True)
     office = models.CharField(max_length=200)
-    fund_cluster = models.CharField(max_length=50, null=True)
+    fund_cluster = models.CharField(max_length=50, null=True, blank=True)
     purpose = models.CharField(max_length=255)
     status = models.CharField(max_length=255)
     requisitioner = models.ForeignKey('Requesitioner', related_name="purchase_requests", on_delete=models.CASCADE)
