@@ -167,7 +167,8 @@ class CheckAuthView(APIView):
             user = request.user
             return Response({
                 "email": user.email,
-                "fullname": f"{user.first_name} {user.last_name}",
+                "first_name": user.first_name,
+                "last_name": user.last_name,
                 "role": user.groups.first().name if user.groups.exists() else "User",
             })
         except Exception as e:
