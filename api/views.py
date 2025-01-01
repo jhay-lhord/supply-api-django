@@ -115,6 +115,9 @@ class ActivateUserAPIView(APIView):
             return render(request, 'activation_failed.html', status=status.HTTP_400_BAD_REQUEST)
         
 class EditUserView(APIView):
+    """
+    Edit User Profile
+    """
     permission_classes = [IsAuthenticated]
     authentication_classes = [CookieJWTAuthentication]
 
@@ -127,7 +130,17 @@ class EditUserView(APIView):
         serializer = CustomUserUpdateSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "User updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+            user_data = {
+                "id": user.id,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "role": user.groups.first().name if user.groups.exists() else "User",
+            }
+            return Response({
+                        'message': 'Updated Successfully',
+                        'user': user_data,
+                    }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -166,6 +179,7 @@ class CheckAuthView(APIView):
         try:
             user = request.user
             return Response({
+                "id": user.id,
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
@@ -205,9 +219,11 @@ class OTPVerificationView(APIView):
                     refresh['fullname'] = f'{user.first_name} {user.last_name}'
                     
                     user = {
+                        'id': user.id,
                         'email': user.email,
                         'role': role.name if role else None,
-                        'fullname': f'{user.first_name} {user.last_name}'
+                        'first_name': user.first_name,
+                        'last_name': user.last_name
                     }
                     
                     # Create the response object
@@ -372,8 +388,7 @@ class LogoutView(APIView):
             return Response({"detail": "Invalid token"}, status=400)
         except Exception as e:
             return Response({"detail": f"Error during logout: {str(e)}"}, status=500)
-
-    
+        
 
 class RecentActivityList(generics.ListAPIView):
     """
