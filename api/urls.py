@@ -38,6 +38,7 @@ urlpatterns = [
 
     path('supplier/', SupplierList.as_view()),
     path('supplier/<str:pk>', SupplierDetail.as_view()),
+    path('supplier/<str:pk>/update/', SupplierUpdateIsAddedToTrueView.as_view()),
 
     path('supplier-item/', SupplierItemList.as_view()),
     path('supplier-item/<str:pk>', SupplierItemDetail.as_view()),

@@ -162,8 +162,10 @@ class AbstractOfQuotation(models.Model):
 
 class Supplier(models.Model):
     supplier_no = models.CharField(max_length=50, primary_key=True)
+    extra_character = models.CharField(max_length=2, null=True)
     aoq = models.ForeignKey(AbstractOfQuotation, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
+    is_added = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
