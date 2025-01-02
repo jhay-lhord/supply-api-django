@@ -61,6 +61,29 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
         if CustomUser.objects.exclude(pk=self.instance.pk).filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
+    
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({"new_password": "Passwords do not match."})
+        return attrs
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect.")
+        return value
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance
+
 
 class UserListSerializer(serializers.ModelSerializer):
     role  = serializers.SerializerMethodField()

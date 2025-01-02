@@ -25,7 +25,7 @@ from django.db.models import Count
 from .models import *
 from .resend import send_mail_resend
 from .serializers import *
-from .serializers import CreateUserSerializer
+from .serializers import *
 from .tokens import get_tokens_for_user, token_decoder
 from dotenv import load_dotenv
 import os
@@ -363,6 +363,9 @@ class LoginTokenOfflineView(TokenObtainPairView):
 
 
 class LogoutView(APIView):
+    """
+    Logout view
+    """
     permission_classes = [IsAuthenticated]
     authentication_classes = [CookieJWTAuthentication]
 
@@ -388,6 +391,20 @@ class LogoutView(APIView):
             return Response({"detail": "Invalid token"}, status=400)
         except Exception as e:
             return Response({"detail": f"Error during logout: {str(e)}"}, status=500)
+        
+class ChangePasswordView(APIView):
+    """
+    Change Password View
+    """
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.update(request.user, serializer.validated_data)
+            return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
 class RecentActivityList(generics.ListAPIView):
