@@ -66,5 +66,6 @@ urlpatterns = [
     path('daily-report/bac', BACDailyReportView.as_view()),
     path('daily-report/supply', SupplyDailyReportView.as_view()),
     path('recent-activities/', RecentActivityList.as_view(), name='recent-activities'),
+    path('send-file/', SendFileView.as_view(), name='send-file'),
 
 ]

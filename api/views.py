@@ -23,7 +23,7 @@ from django.db.models import Count
 
 
 from .models import *
-from .resend import send_mail_resend
+from .resend import send_mail_resend, send_file
 from .serializers import *
 from .serializers import *
 from .tokens import get_tokens_for_user, token_decoder
@@ -299,7 +299,7 @@ class ResendOTPView(APIView):
 class RefreshTokenView(APIView):
     permission_classes = []
     authentication_classes = []
-
+    
     def post(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
         if not refresh_token:
@@ -448,6 +448,53 @@ class RecentActivityList(generics.ListAPIView):
         seven_days_ago = now() - timedelta(days=7)
         queryset = RecentActivity.objects.filter(timestamp__gte=seven_days_ago).select_related('user', 'content_type')
         return queryset 
+    
+    
+
+class SendFileView(APIView):
+    """
+    Send File View
+    """
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]  
+    
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        file = request.FILES.get("file")
+        
+        message_html = f"""
+        <div>
+        <div>
+            <h1>Request for Quotation</h1>
+        </div>
+        <div>
+            <p>Dear <strong>Valued Supplier</strong>,</p>
+            <p>We are currently canvassing items and would like to request a quotation for the attached file. Please review the details of the requested items and provide your best price, terms, and conditions at your earliest convenience.</p>
+            <p>If you have any questions or require further clarification, please feel free to contact us at this email address.</p>
+            <p>Thank you for your prompt attention to this matter. We look forward to your response.</p>
+        </div>
+        <p>
+            <em style="color: #999999;">This is a system-generated email. Please do not reply directly to this message.</em>
+        </p>
+        <p>Best regards,</p>
+            <p>Supply Office<br>
+            Team SlapSoil<br>
+        </div>
+        """
+
+        response = send_file(file, email, message_html)
+
+        if "error" in response:
+            return Response(
+                {"message": f"Failed to send email: {response['error']}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {"message": f"Email sent successfully to {email} with the attached file!"},
+            status=status.HTTP_200_OK,
+        )
+
 
 class UserList(generics.ListCreateAPIView):
     """
