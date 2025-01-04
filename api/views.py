@@ -297,31 +297,60 @@ class ResendOTPView(APIView):
 
 
 class RefreshTokenView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [CookieJWTAuthentication]
-    
+    permission_classes = []
+    authentication_classes = []
+
     def post(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
-        print(f"Refresh Token: {refresh_token}")
-        if refresh_token:
-            try:
-                refresh = RefreshToken(refresh_token)
-                access_token = str(refresh.access_token)
+        if not refresh_token:
+            return Response({'error': 'No refresh token provided'}, status=400)
 
-                response = Response({'message': 'Token refreshed',  'access_token': access_token})
-                response.set_cookie(
-                    key='access_token',
-                    value=access_token,
-                    httponly=True,
-                    secure=is_production,
-                    samesite='None',
-                    max_age=3600,
-                )
-                return response
-            except Exception:
-                return Response({'error': 'Invalid refresh token'}, status=400)
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
 
-        return Response({'error': 'No refresh token provided'}, status=400)
+            response = Response({'message': 'Token refreshed', 'access_token': access_token})
+            response.set_cookie(
+                key='access_token',
+                value=access_token,
+                httponly=True,
+                secure=is_production,  # Ensure `is_production` is defined correctly
+                samesite='None',
+                max_age=3600,  # Token lifespan in seconds
+            )
+            return response
+
+        except InvalidToken:
+            return Response({'error': 'Invalid or expired refresh token'}, status=401)
+
+        except Exception as e:
+            return Response({'error': f'Unexpected error: {str(e)}'}, status=500)
+# class RefreshTokenView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [CookieJWTAuthentication]
+    
+#     def post(self, request):
+#         refresh_token = request.COOKIES.get('refresh_token')
+#         print(f"Refresh Token: {refresh_token}")
+#         if refresh_token:
+#             try:
+#                 refresh = RefreshToken(refresh_token)
+#                 access_token = str(refresh.access_token)
+
+#                 response = Response({'message': 'Token refreshed',  'access_token': access_token})
+#                 response.set_cookie(
+#                     key='access_token',
+#                     value=access_token,
+#                     httponly=True,
+#                     secure=is_production,
+#                     samesite='None',
+#                     max_age=3600,
+#                 )
+#                 return response
+#             except Exception:
+#                 return Response({'error': 'Invalid refresh token'}, status=400)
+
+#         return Response({'error': 'No refresh token provided'}, status=400)
 
 
 
