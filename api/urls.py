@@ -20,6 +20,7 @@ urlpatterns = [
     path('item/', ItemList.as_view()),
     path('item/<str:pk>', ItemDetail.as_view()),
     path('item/<str:field_name>/<str:value>/', ItemsDetail.as_view()),
+    path('purchase-request/item/filter/', ItemsFilterListView.as_view()),
 
     path('purchase-request/', PurchaseRequestList.as_view()),
     path('purchase-request/<str:pk>', PurchaseRequestDetail.as_view()),
@@ -53,6 +54,8 @@ urlpatterns = [
     path('items-delivered/', DeliveredItemsList.as_view()),
     path('items-delivered/<str:pk>', DeliveredItemsDetail.as_view()),
     path('items-delivered/<str:pk>/update', DeliveredItemsUpdateView.as_view()),
+    path('items-delivered/purchase-request/filter/', DeliveredItemsFilterListView.as_view()),
+
 
     path('stock-items/', StockItemsList.as_view()),
     path('stock-items/<str:pk>', StockItemsDetail.as_view()),

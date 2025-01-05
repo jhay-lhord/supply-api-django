@@ -143,6 +143,7 @@ class ItemQuotation(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    unit_quantity = models.CharField(max_length=255)
     unit_price = models.CharField(max_length=255)
     brand_model = models.CharField(max_length=255)
     is_low_price = models.BooleanField(default=False)
@@ -215,6 +216,7 @@ class InspectionAndAcceptance(models.Model):
 
 
 class DeliveredItems(models.Model):
+    purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     inspection = models.ForeignKey(InspectionAndAcceptance, on_delete=models.CASCADE)
     supplier_item = models.ForeignKey(SupplierItem, on_delete=models.CASCADE)
     quantity_delivered = models.CharField(max_length=50, null=True)
@@ -225,7 +227,7 @@ class DeliveredItems(models.Model):
     updated_at = models.DateTimeField(default=now, null=True)
 
     def __str__(self):
-        return f'{self.iar_no}' 
+        return f'{self.purchase_request}' 
 
 class StockItems(models.Model):
     inspection = models.ForeignKey(InspectionAndAcceptance, on_delete=models.CASCADE)

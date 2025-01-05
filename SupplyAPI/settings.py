@@ -77,7 +77,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions','rest_framework_simplejwt.token_blacklist',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'api', 'rest_framework', 'corsheaders'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'api', 'rest_framework', 'corsheaders', 'django_filters'
 ]
 
 MIDDLEWARE = [

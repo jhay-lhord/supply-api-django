@@ -127,12 +127,6 @@ class ResendOTPSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 
-class ItemSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Item
-        fields = '__all__'
-
 class CampusDirectorSerializer(serializers.ModelSerializer):
     
     class Meta: 
@@ -172,6 +166,20 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
             'total_amount', 
             'created_at', 
             'updated_at']  
+        
+class ItemSerializer(serializers.ModelSerializer):
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
+
+    class Meta:
+        model = Item
+        fields = '__all__'
+        extra_kwargs = {
+            'purchase_request': {'write_only': True},
+            'pr_details': {'read_only': True},
+        }
+        
 
 class RequestForQoutationSerializer(serializers.ModelSerializer):
 
@@ -328,6 +336,9 @@ class InspectionAndAcceptanceSerializer(serializers.ModelSerializer):
         }
 
 class DeliveredItemsSerializer(serializers.ModelSerializer):
+    purchase_request = serializers.PrimaryKeyRelatedField(queryset=PurchaseRequest.objects.all(), write_only=True)
+    pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
+
     inspection = serializers.PrimaryKeyRelatedField(queryset=InspectionAndAcceptance.objects.all(), write_only=True)
     inspection_details = InspectionAndAcceptanceSerializer(source='inspection', read_only=True)
 
@@ -339,6 +350,8 @@ class DeliveredItemsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
         extra_kwargs = {
+            'purchase_request': {'write_only':True},
+            'pr_details': {'read_only':True},
             'inspection': {'write_only':True},
             'inspection_details': {'read_only':True},
             'items': {'write_only':True},

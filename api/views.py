@@ -21,7 +21,9 @@ from django.utils.timezone import now
 from django.db.models.functions import TruncDate
 from django.db.models import Count
 
-
+from rest_framework.generics import ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import *
 from .models import *
 from .resend import send_mail_resend, send_file
 from .serializers import *
@@ -724,6 +726,19 @@ class PurchaseRequestStatusUpdateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PurchaseRequest.DoesNotExist:
             return Response({"error": "Purchase Order not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class ItemsFilterListView(ListAPIView):
+    """
+    Views for filtering item in Purchase Request
+    """
+
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ItemsFilter
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class RequestForQoutationDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -1047,6 +1062,20 @@ class DeliveredItemsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DeliveredItemsSerializer
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    
+class DeliveredItemsFilterListView(ListAPIView):
+    """
+    Views for filtering Items delivered by Purchase Request
+    """
+
+    queryset = DeliveredItems.objects.all()
+    serializer_class = DeliveredItemsSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = DeliveredItemsFilter
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
 
 class StockItemsList(generics.ListCreateAPIView):
