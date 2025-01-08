@@ -118,6 +118,8 @@ WSGI_APPLICATION = 'SupplyAPI.wsgi.application'
 IS_LOCALHOST = socket.gethostname() in ['localhost', '127.0.0.1', '::1']
 
 ENVIRONMENT = os.getenv('DJANGO_ENV', 'development')
+IS_USER_ACTIVATION_ENABLED = os.getenv('IS_USER_ACTIVATION_ENABLED', 'True').lower()
+
 
 print(f'\nRunning in {ENVIRONMENT} Mode.\n')
 

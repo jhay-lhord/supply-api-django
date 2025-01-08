@@ -2,6 +2,7 @@ import pyotp
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.conf import settings
 
 from .groups import assign_role_and_save
 from .models import *
@@ -38,7 +39,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
 
         user = User.objects.create(employee_id=employee_id, first_name=first_name, last_name=last_name, email=email, password=password)
-        user.is_active = False
+        user.is_active = not settings.IS_USER_ACTIVATION_ENABLED
 
         # generate secret after registration
         user.otp_secret = pyotp.random_base32()

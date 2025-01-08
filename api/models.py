@@ -178,6 +178,8 @@ class SupplierItem(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     item_quotation = models.ForeignKey(ItemQuotation, on_delete=models.CASCADE)
+    item_quantity = models.PositiveIntegerField()
+    item_cost = models.PositiveIntegerField()
     total_amount = models.CharField(max_length=150, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 

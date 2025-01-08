@@ -34,7 +34,7 @@ import os
 
 load_dotenv()
 
-is_production = os.getenv("DJANGO_ENV") == "production"
+is_production = os.getenv('IS_PRODUCTION', 'False').lower() == 'true'
 
 
 class RegisterUserAPIView(generics.CreateAPIView):
@@ -52,6 +52,7 @@ class RegisterUserAPIView(generics.CreateAPIView):
 
             try:
                 user = serializer.save()
+                user.save()
                 token = get_tokens_for_user(user)
 
                 # Get the current domain
@@ -239,15 +240,15 @@ class OTPVerificationView(APIView):
                         key='refresh_token',
                         value=str(refresh),
                         httponly=True,
-                        secure=is_production,
-                        samesite='None'
+                        secure=True,
+                        samesite='None' if not is_production else 'Lax'
                     )
                     response.set_cookie(
                         key='access_token',
                         value=str(refresh.access_token),
                         httponly=True,
-                        secure=is_production, 
-                        samesite='None'
+                        secure=True, 
+                        samesite='None' if not is_production else 'Lax'
                     )
 
                     return response
