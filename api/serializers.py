@@ -118,6 +118,13 @@ class RecentActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = RecentActivity
         fields = ['id', 'user', 'user_role', 'activity_type', 'timestamp', 'content_type', 'object_id']
+        
+
+class TrackStatusSerializer(serializers.ModelSerializer):
+    
+    class Meta: 
+        model = TrackStatus
+        fields = '__all__'
 
 
 class OTPVerificationSerializer(serializers.Serializer):

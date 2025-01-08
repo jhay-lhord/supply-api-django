@@ -107,9 +107,36 @@ class PurchaseRequest(models.Model):
     total_amount = models.CharField(max_length=150, default="0")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(default=now, null=True)
+    
+    STATUS_DESCRIPTIONS = {
+    "Pending for Approval" : "The purchase request has been submitted and is awaiting review and approval by the authorized personnel or department. No further action will be taken until approval is granted.",
+    "Approved": "The purchase request has been reviewed and approved for further processing.",
+    "Rejected": "The purchase request has been reviewed and denied. Please contact the relevant department for details.",
+    "Cancelled": "The purchase request has been cancelled and will not proceed further.",
+    "Forwarded to Procurement": "The purchase request has been forwarded to the procurement team for evaluation and action.",
+    "Received by the Procurement": "The procurement team has acknowledged receipt of the purchase request and will begin processing it.",
+    "Ready to Order": "The purchase request has been approved and is ready for the order to be placed with the supplier.",
+    "Order Placed": "The order has been successfully placed with the supplier based on the purchase request.",
+    "Items Delivered": "The ordered items have been delivered and are awaiting further action.",
+    "Ready for Distribution": "The items are prepared and ready for distribution to the requesting department or personnel.",
+    "Completed": "The purchase request process has been successfully completed, and all items have been delivered and distributed.",
+    }
+
 
     def __str__(self):
         return f'{self.pr_no}'
+    
+    def get_status_description(self):
+        # Fetch the description dynamically based on the status
+        return self.STATUS_DESCRIPTIONS.get(self.status, "Unknown status.")
+    
+    
+class TrackStatus(models.Model):
+    pr_no = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
+    status = models.CharField(max_length=150)
+    description = models.TextField() 
+    updated_at = models.DateTimeField(auto_now=True)
+
 
 class Item(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, related_name="items", on_delete=models.CASCADE)
@@ -143,7 +170,7 @@ class ItemQuotation(models.Model):
     purchase_request = models.ForeignKey(PurchaseRequest, on_delete=models.CASCADE)
     rfq = models.ForeignKey(RequestForQoutation, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    unit_quantity = models.CharField(max_length=255)
+    # unit_quantity = models.CharField(max_length=255)
     unit_price = models.CharField(max_length=255)
     brand_model = models.CharField(max_length=255)
     is_low_price = models.BooleanField(default=False)

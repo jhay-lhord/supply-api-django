@@ -70,5 +70,6 @@ urlpatterns = [
     path('daily-report/supply', SupplyDailyReportView.as_view()),
     path('recent-activities/', RecentActivityList.as_view(), name='recent-activities'),
     path('send-file/', SendFileView.as_view(), name='send-file'),
+    path('track-purchase-request/filter/', TrackStatusListView.as_view(), name='track-purchase-request')
 
 ]

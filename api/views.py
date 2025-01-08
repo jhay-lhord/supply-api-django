@@ -152,7 +152,7 @@ class LoginTokenObtainPairView(TokenObtainPairView):
     Login User credentials
     """
     serializer_class = LoginTokenObtainPairSerializer
-    authentication_classes = [CookieJWTAuthentication]
+    authentication_classes = []
     permission_classes = []
 
     def post(self, request, *args, **kwargs):
@@ -328,33 +328,6 @@ class RefreshTokenView(APIView):
 
         except Exception as e:
             return Response({'error': f'Unexpected error: {str(e)}'}, status=500)
-# class RefreshTokenView(APIView):
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [CookieJWTAuthentication]
-    
-#     def post(self, request):
-#         refresh_token = request.COOKIES.get('refresh_token')
-#         print(f"Refresh Token: {refresh_token}")
-#         if refresh_token:
-#             try:
-#                 refresh = RefreshToken(refresh_token)
-#                 access_token = str(refresh.access_token)
-
-#                 response = Response({'message': 'Token refreshed',  'access_token': access_token})
-#                 response.set_cookie(
-#                     key='access_token',
-#                     value=access_token,
-#                     httponly=True,
-#                     secure=is_production,
-#                     samesite='None',
-#                     max_age=3600,
-#                 )
-#                 return response
-#             except Exception:
-#                 return Response({'error': 'Invalid refresh token'}, status=400)
-
-#         return Response({'error': 'No refresh token provided'}, status=400)
-
 
 
 class LoginTokenOfflineView(TokenObtainPairView):
@@ -497,6 +470,20 @@ class SendFileView(APIView):
             {"message": f"Email sent successfully to {email} with the attached file!"},
             status=status.HTTP_200_OK,
         )
+        
+        
+class TrackStatusListView(ListAPIView):
+    """
+    Views for filtering status in Purchase Request
+    """
+
+    queryset = TrackStatus.objects.all().order_by('-updated_at')
+    serializer_class = TrackStatusSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TrackStatusFilter
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
 
 class UserList(generics.ListCreateAPIView):

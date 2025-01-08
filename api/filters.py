@@ -15,3 +15,11 @@ class DeliveredItemsFilter(filters.FilterSet):
     class Meta:
         model = DeliveredItems
         fields = ['purchase_request',]
+        
+        
+class TrackStatusFilter(filters.FilterSet):
+    pr_no = filters.CharFilter(field_name='pr_no__pr_no', lookup_expr='exact')
+
+    class Meta:
+        model = TrackStatus
+        fields = ['pr_no',]

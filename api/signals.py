@@ -1,9 +1,10 @@
 from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from .utils import get_current_user
 from .middleware import get_user_role
-from .models import RecentActivity
+from .models import RecentActivity, TrackStatus, PurchaseRequest
 import logging
 
 logger = logging.getLogger(__name__)
@@ -54,3 +55,25 @@ for model_name in models_to_track:
     model = apps.get_model('api', model_name)
     post_save.connect(create_update_activity, sender=model)
     post_delete.connect(delete_activity, sender=model)
+    
+@receiver(post_save, sender=PurchaseRequest)
+def update_status_on_save(sender, instance, **kwargs):
+    # Get the dynamic description based on the status
+    description = instance.get_status_description()
+    
+    # Check if the status has changed
+    # Check if the most recent status for this PR No is the same as the current status
+    latest_status = TrackStatus.objects.filter(pr_no=instance).order_by('-updated_at').first()
+    
+    if latest_status and latest_status.status == instance.status:
+        print("Status is the same as the latest. Skipping duplicate status entry.")
+        return  # Don't create a duplicate if the status hasn't changed
+    
+    
+    # Update or create the corresponding Status object
+    TrackStatus.objects.create(
+        pr_no=instance,  # Link to the PurchaseRequest
+        status=instance.status,
+        description=description,
+    )
+
