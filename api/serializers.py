@@ -29,6 +29,12 @@ class CreateUserSerializer(serializers.ModelSerializer):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({'password': 'Password fields didnt match.'})
         return attrs
+    
+    def validate_employee_id(self, value):
+        """Check if the employee_id is already in use."""
+        if CustomUser.objects.filter(employee_id=value).exists():
+            raise serializers.ValidationError("Employee ID already exists.")
+        return value
 
     def create(self, validated_data):
         employee_id = validated_data.pop('employee_id')
@@ -307,7 +313,7 @@ class PurchaseOrderItemSerializer(serializers.ModelSerializer):
     pr_details = PurchaseRequestSerializer(source='purchase_request', read_only=True)
 
     purchase_order = serializers.PrimaryKeyRelatedField(queryset=PurchaseOrder.objects.all(), write_only=True)
-    pr_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
+    po_details = PurchaseOrderSerializer(source='purchase_order', read_only=True)
     
     supplier_item = serializers.PrimaryKeyRelatedField(queryset=SupplierItem.objects.all(), write_only=True)
     supplier_item_details = SupplierItemSerializer(source='supplier_item', read_only=True)
