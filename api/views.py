@@ -978,31 +978,25 @@ class SupplyDailyReportView(APIView):
     def get(self, request, *args, **kwargs):  
         seven_days_ago = now() - timedelta(days=7)
          
-        # Active Purchase Request
-        active_pr = (
+        # All Purchase Request
+        purchase_request = (
             PurchaseRequest.objects
             .annotate(day=TruncDate("created_at"))  # Annotate with day of week
             .values("day") 
-            .annotate(total_active_pr=Count("pr_no"))  # Aggregate the count field
+            .annotate(total_purchase_request=Count("pr_no"))  # Aggregate the count field
         )
-        # Purchase Request in Progress
-        inprogress_pr = (
-            PurchaseRequest.objects.filter(status="Forwarded to Procurement")
+        # All Purchase Order
+        purchase_order = (
+            PurchaseOrder.objects
             .annotate(day=TruncDate("created_at"))
             .values("day")
-            .annotate(total_inprogress_pr=Count("pr_no"))
-        )
-        # order in progress
-        inprogress_po = (
-            PurchaseOrder.objects.annotate(day=TruncDate("created_at"))
-            .values("day")
-            .annotate(total_inprogress_po=Count("po_no"))
+            .annotate(total_purchase_order=Count("po_no"))
         )
         # Initialize Combined Data for the last 7 days
         date_range = [(now() - timedelta(days=i)).date() for i in range(7)]
-        combined_data = {day.strftime("%b %d"): {"day": day.strftime("%b %d"), "total_active_pr": 0, "total_inprogress_pr": 0, "total_inprogress_po": 0} for day in date_range}
+        combined_data = {day.strftime("%b %d"): {"day": day.strftime("%b %d"), "total_purchase_request": 0, "total_purchase_order": 0} for day in date_range}
         # Process and Combine Data
-        for data, key in zip([active_pr, inprogress_pr, inprogress_po], ["total_active_pr", "total_inprogress_pr", "total_inprogress_po"]):
+        for data, key in zip([purchase_request, purchase_order], ["total_purchase_request", "total_purchase_order"]):
             for entry in data:
                 day_str = entry["day"].strftime("%b %d")
                 if day_str in combined_data:
