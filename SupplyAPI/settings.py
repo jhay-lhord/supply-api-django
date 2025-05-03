@@ -56,13 +56,10 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", "https://supply-management-system.netlify.app", "https://jhay-lhord.github.io/login-system-v2/"
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'localhost').split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173", "https://supply-management-system.netlify.app", "https://jhay-lhord.github.io/login-system-v2/"
-]
+CSRF_TRUSTED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'localhost').split(',')
+
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
